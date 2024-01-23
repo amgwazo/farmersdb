@@ -1,16 +1,4 @@
-.custom-navbar {
-  display: flex;
-  justify-content: space-between;
-}
-
-@media (max-width: 991.98px) {
-  .custom-navbar {
-    flex-direction: column;
-  }
-}
-
-
-/* .App {
+.App {
   text-align: center;
 }
 
@@ -47,4 +35,4 @@
   to {
     transform: rotate(360deg);
   }
-} */
+}

@@ -4,9 +4,14 @@ const dotenv = require("dotenv");
 const authRoutes = require("./src/routes/auth");
 const verifyToken = require("./src/middleware/auth");
 const farmerRoutes = require("./src/routes/farmer");
+const cors = require("cors");
+
+
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+const PORT = process.env.PORT || 3005;
 
 dotenv.config();
 require("./src/config/db");
