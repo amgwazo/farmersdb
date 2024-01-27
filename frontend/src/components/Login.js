@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
-import axios from "axios";
 import {  useNavigate, Link } from "react-router-dom";
+import axios from "../api/axios";
+import useAuth from "../hooks/useAuth";
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
+  
+    const { setAuth } = useAuth();
   const navigate = useNavigate();
   
 
@@ -39,11 +43,26 @@ const Login = () => {
 
 
     try {
-      const apiUrl = process.env.REACT_APP_API_URL;
 
         // Register new user if no user ID is present
       // const response =  await axios.post(`${apiUrl}/auth/login`, userData
-      await axios.post(`${apiUrl}/auth/login`, userData);
+      const response = await axios.post(`/auth/login`, userData);
+
+      const decodedToken = jwtDecode(response?.data?.token);
+
+      const roles = decodedToken.role;
+
+      console.log("User Role:", roles);
+
+      const token = response?.data?.token;
+      // const roles = response?.data?.role;
+      setAuth({ userData, roles, token });
+      setUserData({ ...userData, username: "" });
+      setUserData({ ...userData, password: "" });
+      
+      // // console.log(`User data is: ${userData.username}`)
+      // console.log("Username:", userData.username);
+      // console.log("Password:", userData.password);
 
          // Redirect to the Users component after registration/update
       navigate("/"); 

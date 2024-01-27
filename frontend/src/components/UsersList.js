@@ -1,31 +1,38 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect, useContext } from "react";
+// import axios from "axios";
+import axios from "../api/axios";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "react-bootstrap";
+import AuthContext from "../context/AuthProvider";
 
 const UserList = () => {
+
+  
+ 
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 3; // Adjust as needed
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
-
-   const token =
-     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWNkMDA0N2M4ZWZmNjU1MDZhOGQ3MiIsInVzZXJuYW1lIjoiYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcwNjEwMzMwNSwiZXhwIjoxNzA2NDYzMzA1fQ.LFCoTgIS_uQ-kVrQqbs62wZr8m8Ep3A-Hvkz-Hw_tJI";
-
+    const { auth } = useContext(AuthContext);
+    const { token } = auth;
+    console.log(token);
+    // console.log(roles);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-          const apiUrl = process.env.REACT_APP_API_URL;
-          const response = await axios.get(`${apiUrl}/auth/filtered/users`, {
+          // const apiUrl = process.env.REACT_APP_API_URL;
+          const response = await axios.get(`/auth/filtered/users`, {
             headers: {
-              Authorization: `${token}`, // Include your access token here
+              Authorization: `${token}`, 
             },
           });
+          console.log('test response')
+          console.log(response)
         setUsers(response.data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -33,7 +40,7 @@ const UserList = () => {
     };
 
     fetchUsers();
-  }, []);
+  }, [token]);
 
 
   const handleSort = (key) => {
