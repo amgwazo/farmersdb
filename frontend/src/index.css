@@ -1,13 +1,103 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    /* background-color: dodgerblue; */
+    border-radius: 20px;    
+   background-color:rgb(3, 3, 37);
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.navbar {
+  /* background:  rgb(238, 182, 77); */
+   background-color: rgba(3, 48, 250, 0.4);
+   color: white;
+}
+
+.navLink-custom {
+  color: white;
+}
+
+form label {
+  margin-top: 8px;
+  margin-bottom: 0px;
+  font-weight: 200;
+}
+
+form {
+  /* background: rgb(247, 218, 165); */
+  background-color: rgba(53, 35, 102, 0.115);
+  padding: 15px;
+  border-radius: 20px;
+  /* color: white; */
+  font-weight:bolder;
+}
+
+save-button {
+  background-color: teal;
+}
+
+cancel-button {
+  background-color: gray;
+}
+
+
+/* Table / Pagination Styling*/
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  /* background-color: #30412f9c; */
+  background-color:  #5d7e50;;
+  color: white;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+th, td {
+  padding: 8px;
+  border: 1px solid #817e7e;
+  border-left: 0;
+  border-bottom: 0;
+  border-right: 0;
+
+}
+
+th {
+  /* background-color: rgba(168, 120, 29, 0.479); */
+  background-color: #486b45be;
+  color: rgb(255, 211, 128);
+}
+
+/* Styling for pagination buttons */
+.pagination-container {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination-button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: 1px solid #007bff;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.pagination-button:hover {
+  background-color: #0056b3;
+}
+
+/* END Table / Pagination Styling*/

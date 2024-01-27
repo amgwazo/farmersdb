@@ -1,7 +1,4 @@
-.custom-navbar {
-  display: flex;
-  justify-content: space-between;
-}
+
 
 @media (max-width: 991.98px) {
   .custom-navbar {
@@ -10,10 +7,11 @@
 }
 
 
-/* .App {
+ .App {
   text-align: center;
+   /* background-color: #36454f; Charcoal */
 }
-
+/*
 .App-logo {
   height: 40vmin;
   pointer-events: none;

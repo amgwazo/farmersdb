@@ -2,9 +2,13 @@ const Farmer = require("../models/Farmer");
 
 const createFarmer = async (req, res) => {
   try {
-    const { firstName, lastName, nationalId, dob, gender, year,
+    const {firstName, lastName, nationalId, dob, gender, year,
       companyId,
-      capturedBy, } = req.body;
+       } = req.body;
+
+      const company = req.user.company;
+      const capturedBy = req.user.username;
+
 
     // Validate national ID format (000000/00/0)
     const nationalIdRegex = /^\d{6}\/\d{2}\/\d{1}$/;
@@ -14,6 +18,7 @@ const createFarmer = async (req, res) => {
     }
 
     const newFarmer = new Farmer({
+      company,
       firstName,
       lastName,
       nationalId,
@@ -111,9 +116,7 @@ const bulkInsertFarmers = async (req, res) => {
 
     // Check if there are any failed farmers
     const failedFarmers = resultsArray.filter((result) => result.status === 'FAILURE');
-    console.log('failed.....')
-    console.log(failedFarmers);
-
+   
     if (failedFarmers.length === 0) {
       return res.status(200).json({ message: 'Bulk insert successful', results: resultsArray });
     }
@@ -122,9 +125,9 @@ const bulkInsertFarmers = async (req, res) => {
     const formattedFailedFarmers = failedFarmers.map((failure) => {
     //   const index = farmersToInsert.findIndex((farmer) => farmer.nationalId === failure.nationalId);
     //   const { firstName, lastName, nationalId, dob, gender, year, companyId } = farmersToInsert[index];
-    const { firstName, lastName, nationalId, dob, gender, year, companyId } = failure;
+    const { company, firstName, lastName, nationalId, dob, gender, year, companyId } = failure;
       return {
-        details: { firstName, lastName, nationalId, dob, gender, year, companyId },
+        details: {company, firstName, lastName, nationalId, dob, gender, year, companyId },
         // index,
       };
     });
@@ -169,7 +172,7 @@ const bulkInsertFarmers = async (req, res) => {
 
 
      return {
-       
+       company,
          firstName,
          lastName,
          nationalId,
@@ -236,6 +239,7 @@ const updateFarmer = async (req, res) => {
     // Update the farmer based on the provided information
     const { _id } = req.query;
     const {
+      company,
       firstName,
       lastName,
       nationalId,
@@ -245,6 +249,8 @@ const updateFarmer = async (req, res) => {
       companyId,
       capturedBy,
     } = req.body;
+
+    const lastModifiedBy = req.user.username;
 
     // Validate national ID format (000000/00/0)
     const nationalIdRegex = /^\d{6}\/\d{2}\/\d{1}$/;
@@ -266,6 +272,7 @@ const updateFarmer = async (req, res) => {
     const updatedFarmer = await Farmer.findByIdAndUpdate(
       _id,
       {
+        company,
         firstName,
         lastName,
         nationalId,
@@ -274,6 +281,7 @@ const updateFarmer = async (req, res) => {
         year,
         companyId,
         capturedBy,
+        lastModifiedBy,
       },
       { new: true, runValidators: true }
     );
