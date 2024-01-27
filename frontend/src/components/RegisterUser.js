@@ -120,19 +120,19 @@ const RegisterUser = () => {
   };
 
   return (
-    <div className="container w-50 bg-light p-3 bg-dark  rounded my-1">
-      <h5 className="my-1 w-100 ms-2 text-warning">
+    <div className="container w-75 bg-light p-3 bg-dark  rounded my-1">
+      <h5 className="my-0 w-100 ms-2 text-warning ps-2">
         {userId ? "Update User" : "Register User"}
       </h5>
-      <Form onSubmit={handleSubmit} className="text-success">
-        <Form.Group controlId="formCompany">
+      <Form onSubmit={handleSubmit} className="row text-success pt-0">
+        <Form.Group controlId="formCompany" className="col-md-6">
           <Form.Label>User Company</Form.Label>
           <Form.Control
             as="select"
             name="company"
             value={userData.company}
             onChange={handleChange}
-            className="ps-1 "
+            className="ps-1"
           >
             <option value="Farmers Board Of Zambia">
               Farmers Board Of Zambia
@@ -145,7 +145,7 @@ const RegisterUser = () => {
           </Form.Control>
         </Form.Group>
 
-        <Form.Group controlId="formUsername">
+        <Form.Group controlId="formUsername" className="col-md-6">
           <Form.Label>Username</Form.Label>
           <Form.Control
             type="text"
@@ -155,14 +155,14 @@ const RegisterUser = () => {
             onChange={handleChange}
             isInvalid={!!validationErrors.username}
             required
-            className="ps-1 "
+            className="ps-1"
           />
           <Form.Control.Feedback type="invalid">
             {validationErrors.username}
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group controlId="formPassword">
+        <Form.Group controlId="formPassword" className="col-md-6">
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
@@ -179,7 +179,7 @@ const RegisterUser = () => {
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group controlId="formConfirmPassword">
+        <Form.Group controlId="formConfirmPassword" className="col-md-6">
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control
             type="password"
@@ -196,7 +196,7 @@ const RegisterUser = () => {
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group controlId="formRole">
+        <Form.Group controlId="formRole" className="col-md-6">
           <Form.Label>User Role</Form.Label>
           <Form.Control
             as="select"

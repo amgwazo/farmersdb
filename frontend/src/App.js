@@ -12,51 +12,53 @@ import FarmersList from "./components/FarmersList";
 
 const App = () => {
 
+  const ROLES = {
+    User: 'user',
+    Admin: 'admin',
+  };
+
   
   return (
     <Router>
       <Navbar
         bg="navbar rounded ps-3"
         expand="lg"
-        className="justify-content-between bg-success mt-4 ms-5 me-5 mb-5"
+        className="justify-content-between s mt-4 ms-5 me-5 mb-5"
       >
         <Navbar.Brand href="/" className="text-warning fw-bold fs-3">
           Farmers App
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="me-3">
-            <Nav.Link className="navlink-custom text-light" href="/">
+          <Nav className="me-3 ">
+            <Nav.Link  href="/">
               Home
             </Nav.Link>
-            <Nav.Link className="navlink-custom text-light" href="/login">
+            <Nav.Link href="/login">
               Login
             </Nav.Link>
             <Nav.Link
-              className="navlink-custom text-light"
               href="/register-user"
             >
               New User
             </Nav.Link>
-            <Nav.Link className="Navlink-custom text-light" href="/view-users">
+            <Nav.Link href="/view-users">
               Users
             </Nav.Link>
-            <Nav.Link className="navlink-custom text-light" href="/farmers">
+            <Nav.Link href="/farmers">
               Farmers
             </Nav.Link>
             <Nav.Link
-              className="navlink-custom text-light"
               href="/register-farmer"
             >
               New Farmer
             </Nav.Link>
             <Nav.Link
-              className="navlink-custom text-light"
               href="/upload-farmers"
             >
               Upload Farmers
             </Nav.Link>
-            <Nav.Link className="navlink-custom text-light" href="/logout">
+            <Nav.Link  href="/logout">
               Logout
             </Nav.Link>
           </Nav>

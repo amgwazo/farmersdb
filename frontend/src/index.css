@@ -18,18 +18,22 @@ code {
 
 .navbar {
   /* background:  rgb(238, 182, 77); */
-   background-color: rgba(3, 48, 250, 0.4);
+     background-color: #198754b4;
    color: white;
 }
 
-.navLink-custom {
-  color: white;
+.nav-link {
+  color: rgba(250, 248, 248, 0.664);
+}
+
+.nav-link:hover{
+  color: orange;
 }
 
 form label {
   margin-top: 8px;
   margin-bottom: 0px;
-  font-weight: 200;
+  font-weight: 500;
 }
 
 form {
@@ -53,14 +57,18 @@ cancel-button {
 /* Table / Pagination Styling*/
 .table-container {
   overflow-x: auto;
+  background-color: #33353d;
+  padding: 15px;
+  border-radius: 20px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   /* background-color: #30412f9c; */
-  background-color:  #5d7e50;;
-  color: white;
+  /* background-color:  #5d7e50; */
+  background-color: #212529;
+  color: rgba(255, 255, 255, 0.541);
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 }
@@ -76,8 +84,15 @@ th, td {
 
 th {
   /* background-color: rgba(168, 120, 29, 0.479); */
-  background-color: #486b45be;
-  color: rgb(255, 211, 128);
+  /* background-color: rgba(248, 224, 6, 0.144); */
+     background-color: #198754b4;
+  color: #ffc10785;
+  /* color: rgb(65, 138, 47); */
+}
+
+tr:hover {
+  color: #ffc10785;
+  cursor: pointer;
 }
 
 /* Styling for pagination buttons */
@@ -99,5 +114,16 @@ th {
 .pagination-button:hover {
   background-color: #0056b3;
 }
+
+.page-number {
+  color: rgba(255, 255, 255, 0.541);
+}
+
+.pagination-btn:not([disabled]):hover {
+  background-color: #ffc10785;
+}
+/* .table-sort-arrow {
+  color: rgb(65, 138, 47);
+} */
 
 /* END Table / Pagination Styling*/

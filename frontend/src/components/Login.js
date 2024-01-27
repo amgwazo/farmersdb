@@ -55,9 +55,9 @@ const Login = () => {
 
   return (
     <div className="container  w-50 bg-dark p-3  rounded my-1">
-      <h5 className="my-1 w-100 ms-2 text-warning">{"Login"}</h5>
+      <h5 className="my-0 w-100 ps-2 ms-2 text-warning">{"Login"}</h5>
 
-      <Form onSubmit={handleSubmit} className=" text-success">
+      <Form onSubmit={handleSubmit} className=" text-success pt-0">
         <Form.Group controlId="formUsername">
           <Form.Label>Username</Form.Label>
           <Form.Control
