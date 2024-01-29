@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Form, Button } from "react-bootstrap";
 import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom";  
+import AuthContext from "../context/AuthProvider";
 
 const RegisterUser = () => {
   const { userId } = useParams();  
   const navigate = useNavigate();  
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWNkMDA0N2M4ZWZmNjU1MDZhOGQ3MiIsInVzZXJuYW1lIjoiYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcwNjEwMzMwNSwiZXhwIjoxNzA2NDYzMzA1fQ.LFCoTgIS_uQ-kVrQqbs62wZr8m8Ep3A-Hvkz-Hw_tJI";
+  
+  const { auth } = useContext(AuthContext);
+  const { token } = auth;
 
   const [userData, setUserData] = useState({
     username: "",
@@ -54,7 +56,7 @@ const RegisterUser = () => {
 
       fetchUserDetails();
     }
-  }, [userId]);
+  }, [userId, token]);
 
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -93,10 +95,10 @@ const RegisterUser = () => {
     }
 
     try {
-      const apiUrl = process.env.REACT_APP_API_URL;
+      // const apiUrl = process.env.REACT_APP_API_URL;
       if (userId) {
         // Update user if user ID is present in the URL
-        await axios.put(`${apiUrl}/auth/update/user?_id=${userId}`, userData, {
+        await axios.put(`/auth/update/user?_id=${userId}`, userData, {
           headers: {
             Authorization: `${token}`, // Include your access token here
           },
@@ -104,7 +106,7 @@ const RegisterUser = () => {
         );
       } else {
         // Register new user if no user ID is present
-        await axios.post(`${apiUrl}/auth/register`, userData, {
+        await axios.post(`/auth/register`, userData, {
           headers: {
             Authorization: `${token}`, // Include your access token here
           },
@@ -134,6 +136,9 @@ const RegisterUser = () => {
             onChange={handleChange}
             className="ps-1"
           >
+            <option value="">
+              Select Compnay
+            </option>
             <option value="Farmers Board Of Zambia">
               Farmers Board Of Zambia
             </option>
@@ -206,7 +211,6 @@ const RegisterUser = () => {
             className="ps-1"
           >
             <option value="user">User</option>
-            <option value="farmer">Farmer</option>
             <option value="admin">Admin</option>
           </Form.Control>
         </Form.Group>

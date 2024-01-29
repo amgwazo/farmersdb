@@ -13,6 +13,8 @@ import RequireAuth from "./components/RequireAuth";
 import Layout from "./components/Layout";
 import NotFound from "./components/NotFound";
 import Logout from "./components/Logout";
+import Unauthorized from "./components/UnAuthorized";
+import useAuth from "./hooks/useAuth";
 
 const App = () => {
 
@@ -21,57 +23,82 @@ const App = () => {
     Admin: 'admin',
   };
   
+  
+  const { auth } = useAuth();
+  
     
   return (
     <>
       <Navbar
         bg="navbar rounded ps-3"
         expand="lg"
-        className="justify-content-between s mt-4 ms-5 me-5 mb-5"
+        className="d-xs-column d-md-flex  justify-content-md-between mt-4 ms-5 me-5 mb-5"
       >
-        <Navbar.Brand as={Link} to="/" className="text-warning fw-bold fs-3">
+        <Navbar.Brand as={Link} to="/" className="text-warning fw-bold fs-3 ">
           Farmers App
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
+        <div >
+        <Navbar.Toggle aria-controls="responsive-navbar-nav " />
+        <Navbar.Collapse id="responsive-navbar-nav ">
           <Nav className="me-3 ">
             <Nav.Link as={Link} to="/">
               Home
             </Nav.Link>
-            <Nav.Link as={Link} to="/login">
-              Login
-            </Nav.Link>
-            <Nav.Link as={Link} to="/register-user">
-              New User
-            </Nav.Link>
-            <Nav.Link as={Link} to="/view-users">
-              Users
-            </Nav.Link>
-            <Nav.Link as={Link} to="/farmers">
-              Farmers
-            </Nav.Link>
-            <Nav.Link as={Link} to="/register-farmer">
-              New Farmer
-            </Nav.Link>
-            <Nav.Link as={Link} to="/upload-farmers">
-              Upload Farmers
-            </Nav.Link>
-            <Nav.Link as={Link} to="/logout">
-              Logout
-            </Nav.Link>
+
+            {!auth?.userData && (
+              <Nav.Link as={Link} to="/login">
+                Login
+              </Nav.Link>
+            )}
+
+            {/* {auth?.roles === "admin" && (
+              <>
+                
+                <Nav.Link as={Link} to="/view-users">
+                  Users
+                </Nav.Link>
+              </>
+            )} */}
+
+            {auth?.userData && (
+              <>
+                <Nav.Link as={Link} to="/farmers">
+                  Farmers
+                </Nav.Link>
+
+                <Nav.Link as={Link} to="/upload-farmers">
+                  Import
+                </Nav.Link>
+                <Nav.Link as={Link} to="/view-users">
+                  Users
+                </Nav.Link>
+                <Nav.Link as={Link} to="/account">
+                  Account
+                </Nav.Link>
+                <Nav.Link as={Link} to="/logout">
+                  Logout
+                </Nav.Link>
+              </>
+            )}
           </Nav>
         </Navbar.Collapse>
+        </div>
       </Navbar>
+      
       <Routes>
         <Route path="/" element={<Layout />} />
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
 
         {/* PROTECTED ROUTESs */}
-        <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+        <Route
+          element={<RequireAuth allowedRoles={[ROLES.User, ROLES.Admin]} />}
+        >
           <Route path="/farmers" element={<FarmersList />} />
           <Route path="/register-farmer" element={<RegisterFarmer />} />
+          <Route path="/edit-farmer/:farmerId" element={<RegisterFarmer />} />
           <Route path="/upload-farmers" element={<UploadFarmers />} />
         </Route>
 

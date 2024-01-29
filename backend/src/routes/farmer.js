@@ -14,6 +14,7 @@ router.post("/", farmerController.createFarmer);
 router.post('/farmers', farmerController.bulkInsertFarmers);
 router.get("/", farmerController.getFarmers);
 router.get("/:nationalId", farmerController.getFarmerByNationalId);
+router.get("/filtered/farmer", farmerController.getFilteredFarmer);
 
 // Only admins can update and delete farmers. The logic for this is in the controller
 router.put("/", farmerController.updateFarmer);

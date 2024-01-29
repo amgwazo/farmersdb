@@ -5,12 +5,18 @@ const RequireAuth = ({ allowedRoles }) => {
   const { auth } = useAuth();
   const location = useLocation();
 
-  console.log(auth?.roles);
+  //   return allowedRoles?.includes(auth?.roles) ? (
+  // return auth?.roles?.find((role) => allowedRoles?.includes(role)) ? (
+  
+  // Split auth.roles into an array of roles
+  const userRoles = auth?.roles ? auth.roles.split(",") : [];
 
-  return allowedRoles?.includes(auth?.roles) ? (
-    // return auth?.roles?.find((role) => allowedRoles?.includes(role)) ? (
+  // Check if any of the user's roles match the allowed roles
+  const hasMatchingRole = allowedRoles.some((role) => userRoles.includes(role));
+
+  return hasMatchingRole ? (
     <Outlet />
-  ) : auth?.user ? (
+  ) : auth?.userData ? (
     <Navigate to="/unauthorized" state={{ from: location }} replace />
   ) : (
     <Navigate to="/login" state={{ from: location }} replace />

@@ -1,3 +1,4 @@
+const { Types } = require("mongoose");
 const Farmer = require("../models/Farmer");
 
 const createFarmer = async (req, res) => {
@@ -14,7 +15,7 @@ const createFarmer = async (req, res) => {
     const nationalIdRegex = /^\d{6}\/\d{2}\/\d{1}$/;
 
     if (!nationalIdRegex.test(nationalId)) {
-      return res.status(400).json({ message: "Invalid national ID format" });
+      return res.status(400).json({ error: "Invalid national ID format" });
     }
 
     const newFarmer = new Farmer({
@@ -27,6 +28,9 @@ const createFarmer = async (req, res) => {
       year,
       companyId,
       capturedBy,
+      lastModifiedBy: capturedBy,
+      creationDate: new Date(),
+      updatedDate: new Date(),
     });
 
     await newFarmer.save();
@@ -42,7 +46,7 @@ const createFarmer = async (req, res) => {
       error.keyPattern.nationalId
     ) {
       // Duplicate national ID error
-      return res.status(400).json({ message: "National ID already exists" });
+      return res.status(400).json({ error: "National ID already exists" });
     }
 
     if (error.name === "ValidationError") {
@@ -52,11 +56,11 @@ const createFarmer = async (req, res) => {
       );
       return res
         .status(400)
-        .json({ message: "Validation error", errors: errorMessages });
+        .json({ error: "Validation error", errors: errorMessages });
     }
 
     // General internal server error
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -219,7 +223,7 @@ const getFarmerByNationalId = async (req, res) => {
     const farmer = await Farmer.findOne({ nationalId });
 
     if (!farmer) {
-      return res.status(404).json({ message: "Farmer not found" });
+      return res.status(404).json({ message: "Farmer National ID not found" });
     }
 
     res.status(200).json(farmer);
@@ -228,6 +232,42 @@ const getFarmerByNationalId = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+const getFilteredFarmer = async (req, res) => {
+  const { searchTerm } = req.query;
+  console.log(`inside filtered farmer: ${searchTerm}`)
+
+  try {
+    let farmer;
+
+    //Get all farmers
+    if (!searchTerm) {
+      farmer = await Farmer.find();
+    }
+
+    // Check if the searchTerm is a valid ObjectId
+    else if (Types.ObjectId.isValid(searchTerm)) {
+      // If valid, search by _id directly
+      farmer = await Farmer.findOne({ _id: searchTerm });
+    } else {
+      // Otherwise, search by first name or last name or national id
+      farmer = await Farmer.find({
+        $or: [{ firstName: searchTerm }, { lastName: searchTerm }, { nationalId: searchTerm }],
+      });
+    }
+
+    if (!farmer) {
+      return res.status(404).json({ message: "Farmer not found " });
+    }
+
+    res.status(200).json(farmer);
+  } catch (error) {
+    console.error("Error getting Farmer:", error);
+    res.status(500).json({ message: "Internal server errors" });
+  }
+};
+
 
 const updateFarmer = async (req, res) => {
   try {
@@ -251,12 +291,14 @@ const updateFarmer = async (req, res) => {
     } = req.body;
 
     const lastModifiedBy = req.user.username;
+    
+      const updatedDate = new Date();
 
     // Validate national ID format (000000/00/0)
     const nationalIdRegex = /^\d{6}\/\d{2}\/\d{1}$/;
 
     if (!nationalIdRegex.test(nationalId)) {
-      return res.status(400).json({ message: "Invalid national ID format" });
+      return res.status(400).json({ error: "Invalid national ID format" });
     }
 
     // // Check if the updated national ID already exists
@@ -282,6 +324,7 @@ const updateFarmer = async (req, res) => {
         companyId,
         capturedBy,
         lastModifiedBy,
+        updatedDate,
       },
       { new: true, runValidators: true }
     );
@@ -357,6 +400,7 @@ module.exports = {
   createFarmer,
   getFarmers,
   getFarmerByNationalId,
+  getFilteredFarmer,
   updateFarmer,
   deleteFarmer,
   bulkInsertFarmers,

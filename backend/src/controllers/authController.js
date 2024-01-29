@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const User = require("../models/user");
+const { Types } = require("mongoose");
 
 const register = async (req, res) => {
   try {
@@ -53,7 +54,7 @@ const login = async (req, res) => {
       { id: user._id, username: user.username, role: user.role, company: user.company},
       process.env.JWT_SECRET,
       {
-        expiresIn: "100h",
+        expiresIn: "1h",
       }
     );
 
@@ -106,7 +107,7 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const { Types } = require("mongoose");
+
 
 const getUser = async (req, res) => {
   const { searchTerm } = req.query;

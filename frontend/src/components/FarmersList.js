@@ -1,19 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "react-bootstrap";
+import AuthContext from "../context/AuthProvider";
 
 const FarmersList = () => {
+  const navigate = useNavigate();
   const [farmers, setFarmers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const farmersPerPage = 5; // Adjust as needed
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWNkMDA0N2M4ZWZmNjU1MDZhOGQ3MiIsInVzZXJuYW1lIjoiYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcwNjEwMzMwNSwiZXhwIjoxNzA2NDYzMzA1fQ.LFCoTgIS_uQ-kVrQqbs62wZr8m8Ep3A-Hvkz-Hw_tJI";
+  
+    const { auth } = useContext(AuthContext);
+    const { token } = auth;
 
   useEffect(() => {
     const fetchFarmers = async () => {
@@ -31,7 +34,7 @@ const FarmersList = () => {
     };
 
     fetchFarmers();
-  }, []);
+  }, [token]);
 
   const handleSort = (key) => {
     let direction = "asc";
@@ -72,17 +75,35 @@ const FarmersList = () => {
     setCurrentPage(page);
   };
 
+   const handleEdit = (_id) => {
+    navigate(`/edit-farmer/${_id}`);
+   }
+
+   const handleCreate = () => {
+     navigate(`/register-farmer`);
+   };
+
   return (
     <div className="table-container mt-4 ms-5 me-5">
       <h5 className="text-warning">Farmers</h5>
-      <div className="col-sm-12 col-md-7 col-lg-6 col-xl-4 col-xxl-4 ">
-        <input
-          type="text"
-          placeholder="Search by Company, first Name or last Name"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="mb-3 w-100"
-        />
+      <div className="  d-md-flex justify-content-between">
+        <div className=" col-sm-12 col-md-7 col-lg-6 col-xl-4 col-xxl-4">
+          <input
+            type="text"
+            placeholder="Search by Company, first Name or last Name"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="mb-3 py-1 w-100 border-dark rounded"
+          />
+        </div>
+        <Button
+          variant="outline-success"
+          type="button"
+          className="py-1 mb-3"
+          onClick={handleCreate}
+        >
+          Add New
+        </Button>
       </div>
 
       <table>
@@ -127,7 +148,7 @@ const FarmersList = () => {
         </thead>
         <tbody>
           {currentFarmers.map((farmer, index) => (
-            <tr key={index}>
+            <tr key={index} onClick={() => handleEdit(farmer._id)}>
               <td>{farmer.company}</td>
               <td>{farmer.firstName}</td>
               <td>{farmer.lastName}</td>

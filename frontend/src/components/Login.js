@@ -4,6 +4,7 @@ import {  useNavigate, Link } from "react-router-dom";
 import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
+// import {handleSuccessAlert} from "./SweetAlerts";
 
 const Login = () => {
   
@@ -51,19 +52,20 @@ const Login = () => {
       const decodedToken = jwtDecode(response?.data?.token);
 
       const roles = decodedToken.role;
-
-      console.log("User Role:", roles);
+      const userCompany = decodedToken.company;
 
       const token = response?.data?.token;
       // const roles = response?.data?.role;
-      setAuth({ userData, roles, token });
+      setAuth({ userCompany, userData, roles, token });
       setUserData({ ...userData, username: "" });
-      setUserData({ ...userData, password: "" });
+      // setUserData({ ...userData, password: "" });
       
       // // console.log(`User data is: ${userData.username}`)
       // console.log("Username:", userData.username);
       // console.log("Password:", userData.password);
 
+
+      // handleSuccessAlert("Login successful!");
          // Redirect to the Users component after registration/update
       navigate("/"); 
      

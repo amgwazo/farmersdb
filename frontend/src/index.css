@@ -73,22 +73,35 @@ table {
   border-bottom-right-radius: 20px;
 }
 
-th, td {
+ td {
   padding: 8px;
-  border: 1px solid #817e7e;
+  border: 1px solid rgba(62, 62, 104, 0.473);
+  /* border: 1px solid #817e7e; */
   border-left: 0;
   border-bottom: 0;
   border-right: 0;
 
 }
 
+thead {
+  /* border-top: 1px solid rgba(103, 104, 107) ; */
+  padding: 8px;
+  /* background-color:rgba(62, 62, 104, 0.473);    */
+  /* background-color:rgba(7, 7, 78, 0.473);  */
+  background-color:rgba(7, 7, 78, 0.185);
+  border-top-right-radius: 30px;
+  border-top-left-radius: 20px;
+}
+
 th {
   /* background-color: rgba(168, 120, 29, 0.479); */
   /* background-color: rgba(248, 224, 6, 0.144); */
-     background-color: #198754b4;
+     /* background-color: #198754b4; */
+   padding: 8px;
   color: #ffc10785;
   /* color: rgb(65, 138, 47); */
 }
+
 
 tr:hover {
   color: #ffc10785;

@@ -9,7 +9,7 @@ const Logout = () => {
     useEffect(() => {
         logout();
         // Use navigate to redirect after logout
-        navigate("/home");
+        navigate("/login");
     }, [logout, navigate]);
 
     return null; // Logout component doesn't render anything

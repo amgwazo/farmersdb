@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 // import axios from "axios";
 import axios from "../api/axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "react-bootstrap";
@@ -19,8 +19,7 @@ const UserList = () => {
 
     const { auth } = useContext(AuthContext);
     const { token } = auth;
-    console.log(token);
-    // console.log(roles);
+    const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -31,8 +30,7 @@ const UserList = () => {
               Authorization: `${token}`, 
             },
           });
-          console.log('test response')
-          console.log(response)
+         
         setUsers(response.data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -81,18 +79,37 @@ const UserList = () => {
     setCurrentPage(page);
   };
 
+  const handleEdit = (userId) => {
+    navigate(`/edit-user/${userId}`);
+
+  }
+
+  
+   const handleCreate = () => {
+     navigate(`/register-user`);
+   };
+
   return (
     <div className="table-container mt-4 ms-5 me-5">
       <h5 className="text-warning">Users</h5>
-      <div className="col-sm-12 col-md-7 col-lg-6 col-xl-4 col-xxl-4 ">
-        
-        <input
-          type="text"
-          placeholder="Search by Company, userName or User Role"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="mb-3 w-100"
-        />
+      <div className="  d-md-flex justify-content-between">
+        <div className="col-sm-12 col-md-7 col-lg-6 col-xl-4 col-xxl-4 ">
+          <input
+            type="text"
+            placeholder="Search by Company, userName or User Role"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="mb-3 py-1 w-100 border-dark rounded"
+          />
+        </div>
+        <Button
+          variant="outline-success"
+          type="button"
+          className="py-1 mb-3"
+          onClick={handleCreate}
+        >
+          Add New
+        </Button>
       </div>
       <table>
         <thead>
@@ -127,7 +144,7 @@ const UserList = () => {
         </thead>
         <tbody>
           {currentUsers.map((user, index) => (
-            <tr key={index}>
+            <tr key={index} onClick={() => handleEdit(user._id)}>
               <td>{user.company}</td>
               <td>{user.username}</td>
               <td>{user.role}</td>
