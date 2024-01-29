@@ -62,13 +62,13 @@ function RegisterFarmer() {
             }
           );
           const farmer = response.data;
-
+          
           setFarmerData({
             company: farmer.company,
             firstName: farmer.firstName,
             lastName: farmer.lastName,
             nationalId: farmer.nationalId,
-            dob: farmer.dob,
+            dob: new Date(farmer.dob),
             gender: farmer.gender,
             year: farmer.year,
             companyId: farmer.companyId,
@@ -88,6 +88,20 @@ function RegisterFarmer() {
       setFarmerData({ year: "2024", company: userCompany });
     }
   }, [farmerId, token, userCompany]);
+
+  // const dobString = farmerData.dob
+  //   ? new Date(farmerData.dob).toISOString().split("T")[0]
+  //   : "";
+
+    const formatDateString = (dateString) => {
+      const date = new Date(dateString);
+      const options = { day: "numeric", month: "short", year: "numeric" };
+      return date.toLocaleDateString("en-GB", options);
+    };
+
+    
+const dobString = farmerData.dob ? formatDateString(farmerData.dob) : "";
+
 
   const handleChange = (e) => {
     setFarmerData({ ...farmerData, [e.target.name]: e.target.value });
@@ -211,7 +225,7 @@ function RegisterFarmer() {
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group controlId="formNationalId" className="col-md-6">
+        <Form.Group controlId="formNationalId" className="col-md-3">
           <Form.Label>National ID</Form.Label>
           <Form.Control
             type="text"
@@ -225,6 +239,24 @@ function RegisterFarmer() {
           />
           <Form.Control.Feedback type="invalid">
             {validationErrors.nationalId}
+          </Form.Control.Feedback>
+        </Form.Group>
+
+        <Form.Group controlId="formdob" className="col-md-3">
+          <Form.Label>Date Of Birth</Form.Label>
+          <Form.Control
+            type="date"
+            placeholder="Enter date Of Birth"
+            name="dob"
+            // value={farmerData.dob}
+            value={dobString}
+            onChange={handleChange}
+            isInvalid={!!validationErrors.dob}
+            required
+            className="ps-1"
+          />
+          <Form.Control.Feedback type="invalid">
+            {validationErrors.dob}
           </Form.Control.Feedback>
         </Form.Group>
 

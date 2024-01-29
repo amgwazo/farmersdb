@@ -9,6 +9,9 @@ const createFarmer = async (req, res) => {
 
       const company = req.user.company;
       const capturedBy = req.user.username;
+      
+  const currentDate = new Date();
+  currentDate.setUTCHours(currentDate.getUTCHours() + 2);
 
 
     // Validate national ID format (000000/00/0)
@@ -29,8 +32,8 @@ const createFarmer = async (req, res) => {
       companyId,
       capturedBy,
       lastModifiedBy: capturedBy,
-      creationDate: new Date(),
-      updatedDate: new Date(),
+      creationDate: currentDate.getTime(),
+      updatedDate: currentDate.getTime(),
     });
 
     await newFarmer.save();
@@ -74,8 +77,26 @@ const validateNationalId = (nationalId) => {
 };
 
 const bulkInsertFarmers = async (req, res) => {
+  const company = req.user.company;
+  const capturedBy = req.user.username;
+  const currentDate = new Date();
+  currentDate.setUTCHours(currentDate.getUTCHours() + 2);
+
   let resultsArray;
-  const farmersToInsert = req.body;
+  const farmersToInsert = req.body.data;
+  
+  farmersToInsert.forEach((obj) => {
+    obj.updatedDate = currentDate.getTime();
+    obj.creationDate = currentDate.getTime();
+    obj.capturedBy = capturedBy;
+    obj.lastModifiedBy = capturedBy;
+    obj.company = company;
+
+   
+    let existingDate = new Date(obj.dob);
+    existingDate.setUTCHours(existingDate.getUTCHours() + 2);
+    obj.dob = existingDate.getTime();
+  });
 
   try {
     
