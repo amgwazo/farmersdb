@@ -34,14 +34,14 @@ const App = () => {
         expand="lg"
         className="d-xs-column d-md-flex  justify-content-md-between mt-4 ms-5 me-5 mb-5"
       >
-        <Navbar.Brand as={Link} to="/" className="text-warning fw-bold fs-3 ">
+        <Navbar.Brand as={Link} to="/home" className="text-warning fw-bold fs-3 ">
           Farmers App
         </Navbar.Brand>
         <div >
         <Navbar.Toggle aria-controls="responsive-navbar-nav " />
         <Navbar.Collapse id="responsive-navbar-nav ">
           <Nav className="me-3 ">
-            <Nav.Link as={Link} to="/">
+            <Nav.Link as={Link} to="/home">
               Home
             </Nav.Link>
 

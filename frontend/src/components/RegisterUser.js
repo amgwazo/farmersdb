@@ -123,7 +123,7 @@ const RegisterUser = () => {
 
   return (
     <div className="container w-75 bg-light p-3 bg-dark  rounded my-1">
-      <h5 className="my-0 w-100 ms-2 text-warning ps-2">
+      <h5 className="my-0 w-100 ms-2 text-warning ps-0">
         {userId ? "Update User" : "Register User"}
       </h5>
       <Form onSubmit={handleSubmit} className="row text-success pt-0">

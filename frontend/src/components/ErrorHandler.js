@@ -14,7 +14,18 @@ export const ErrorHandler = (error) => {
           // No custom message, handle the error generically
           handleErrorAlert("An error occurred while processing your requests");
         }
-      } else {
+      } 
+        else if (error.response.status === 401) {
+        // Check if there's a custom error message in the response
+        if (error.response.data.message) {
+          handleErrorAlert(error.response.data.message);
+        } else {
+          // No custom message, handle the error generically
+          handleErrorAlert("An error occurred while processing your requests");
+        }
+      } 
+      
+      else {
         // Handle other error statuses if needed
         handleErrorAlert(
           "Request failed with status code:",

@@ -8,7 +8,8 @@ body {
     min-height: 100vh;
     /* background-color: dodgerblue; */
     border-radius: 20px;    
-   background-color:rgb(3, 3, 37);
+   /* background-color:rgb(3, 3, 37); */
+   background-color:rgb(138, 138, 143);
 }
 
 code {
@@ -17,7 +18,7 @@ code {
 }
 
 .navbar {
-  /* background:  rgb(238, 182, 77); */
+  /* background:  rgba(7, 88, 4, 0.63); */
      background-color: #198754b4;
    color: white;
 }
@@ -33,7 +34,11 @@ code {
 form label {
   margin-top: 8px;
   margin-bottom: 0px;
-  font-weight: 500;
+  /* font-weight: 500; */
+}
+
+.login-container{
+  width: 37%;
 }
 
 form {
@@ -41,15 +46,31 @@ form {
   background-color: rgba(53, 35, 102, 0.115);
   padding: 15px;
   border-radius: 20px;
+  font-size: smaller;
+  font-family: Arial, Helvetica, sans-serif;
   /* color: white; */
-  font-weight:bolder;
+  /* font-weight:bolder; */
 }
 
-save-button {
-  background-color: teal;
+.form-control {
+  background-color: #ffffffd7;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: small;
 }
 
-cancel-button {
+.form-control:disabled {
+  
+   background-color:rgba(138, 138, 143, 0.103);
+   border-width: 0;
+   color: #ffffff73;
+}
+.save-button {
+    background-color: #198754b4;
+   color: rgba(255, 255, 255, 0.603);
+}
+
+.cancel-button {
   background-color: gray;
 }
 
@@ -60,6 +81,7 @@ cancel-button {
   background-color: #33353d;
   padding: 15px;
   border-radius: 20px;
+  font-size: smaller;
 }
 
 table {
@@ -71,10 +93,17 @@ table {
   color: rgba(255, 255, 255, 0.541);
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
+  padding: 5px;
+}
+tr {
+  /* padding: 0; */
+  padding-left: 15px;
+  margin-left: 15px;
 }
 
  td {
-  padding: 8px;
+  padding: 0;
+     padding-left: 15px;
   border: 1px solid rgba(62, 62, 104, 0.473);
   /* border: 1px solid #817e7e; */
   border-left: 0;
@@ -84,11 +113,10 @@ table {
 }
 
 thead {
-  /* border-top: 1px solid rgba(103, 104, 107) ; */
-  padding: 8px;
-  /* background-color:rgba(62, 62, 104, 0.473);    */
-  /* background-color:rgba(7, 7, 78, 0.473);  */
-  background-color:rgba(7, 7, 78, 0.185);
+  
+  /* background-color:rgba(7, 7, 78, 0.185); */
+  
+     background-color: #198754b4;
   border-top-right-radius: 30px;
   border-top-left-radius: 20px;
 }
@@ -97,7 +125,9 @@ th {
   /* background-color: rgba(168, 120, 29, 0.479); */
   /* background-color: rgba(248, 224, 6, 0.144); */
      /* background-color: #198754b4; */
-   padding: 8px;
+     padding-top: 5px;
+     padding-bottom: 5px;
+     padding-left: 15px;
   color: #ffc10785;
   /* color: rgb(65, 138, 47); */
 }

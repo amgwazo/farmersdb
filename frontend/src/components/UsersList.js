@@ -96,16 +96,16 @@ const UserList = () => {
         <div className="col-sm-12 col-md-7 col-lg-6 col-xl-4 col-xxl-4 ">
           <input
             type="text"
-            placeholder="Search by Company, userName or User Role"
+            placeholder="Search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="mb-3 py-1 w-100 border-dark rounded"
+            className="mb-3 py-0 w-50 border-dark rounded"
           />
         </div>
         <Button
           variant="outline-success"
           type="button"
-          className="py-1 mb-3"
+          className="btn btn-sm py-1 mb-3 save-button"
           onClick={handleCreate}
         >
           Add New
@@ -113,7 +113,7 @@ const UserList = () => {
       </div>
       <table>
         <thead>
-          <tr>
+          <tr className="ps-5 ms-5">
             <th onClick={() => handleSort("company")}>
               Company
               {sortConfig.key === "company" && (
@@ -144,7 +144,11 @@ const UserList = () => {
         </thead>
         <tbody>
           {currentUsers.map((user, index) => (
-            <tr key={index} onClick={() => handleEdit(user._id)}>
+            <tr
+              className="ps-5"
+              key={index}
+              onClick={() => handleEdit(user._id)}
+            >
               <td>{user.company}</td>
               <td>{user.username}</td>
               <td>{user.role}</td>

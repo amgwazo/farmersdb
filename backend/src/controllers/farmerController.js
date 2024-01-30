@@ -1,6 +1,8 @@
 const { Types } = require("mongoose");
 const Farmer = require("../models/Farmer");
 
+const { v4: uuidv4 } = require("uuid");
+
 const createFarmer = async (req, res) => {
   try {
     const {firstName, lastName, nationalId, dob, gender, year,
@@ -84,6 +86,7 @@ const bulkInsertFarmers = async (req, res) => {
 
   let resultsArray;
   const farmersToInsert = req.body.data;
+  const batchNumber = uuidv4();
   
   farmersToInsert.forEach((obj) => {
     obj.updatedDate = currentDate.getTime();
@@ -91,6 +94,7 @@ const bulkInsertFarmers = async (req, res) => {
     obj.capturedBy = capturedBy;
     obj.lastModifiedBy = capturedBy;
     obj.company = company;
+    obj.batchNumber = batchNumber;
 
    
     let existingDate = new Date(obj.dob);

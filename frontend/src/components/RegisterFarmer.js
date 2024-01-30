@@ -68,7 +68,7 @@ function RegisterFarmer() {
             firstName: farmer.firstName,
             lastName: farmer.lastName,
             nationalId: farmer.nationalId,
-            dob: new Date(farmer.dob),
+            dob: farmer.dob,
             gender: farmer.gender,
             year: farmer.year,
             companyId: farmer.companyId,
@@ -93,14 +93,14 @@ function RegisterFarmer() {
   //   ? new Date(farmerData.dob).toISOString().split("T")[0]
   //   : "";
 
-    const formatDateString = (dateString) => {
-      const date = new Date(dateString);
-      const options = { day: "numeric", month: "short", year: "numeric" };
-      return date.toLocaleDateString("en-GB", options);
-    };
+    // const formatDateString = (dateString) => {
+    //   const date = new Date(dateString);
+    //   const options = { day: "numeric", month: "short", year: "numeric" };
+    //   return date.toLocaleDateString("en-GB", options);
+    // };
 
     
-const dobString = farmerData.dob ? formatDateString(farmerData.dob) : "";
+// const dobString = farmerData.dob ? formatDateString(farmerData.dob) : "";
 
 
   const handleChange = (e) => {
@@ -165,11 +165,14 @@ const dobString = farmerData.dob ? formatDateString(farmerData.dob) : "";
 
 
   return (
-    <div className="container w-75 bg-light p-3 bg-dark  rounded my-1">
-      <h5 className="my-0 w-100 ms-2 text-warning ps-2">
+    <div className="container w-75 bg-light p-3 bg-dark  rounded my-1 ps-md-4 pe-md-4">
+      <h6 className="my-0 w-100 ms-0 text-warning ps-0 ps-md-5 pe-md-5">
         {farmerId ? "Update Farmer" : "Register Farmer"}
-      </h5>
-      <Form onSubmit={handleSubmit} className="row text-success pt-0">
+      </h6>
+      <Form
+        onSubmit={handleSubmit}
+        className="row text-success pt-0 ps-md-5 pe-md-5"
+      >
         <Form.Group controlId="formCompany" className="col-md-6">
           <Form.Label>Farmer Company</Form.Label>
           <Form.Control
@@ -177,7 +180,7 @@ const dobString = farmerData.dob ? formatDateString(farmerData.dob) : "";
             name="company"
             value={farmerData.company}
             onChange={handleChange}
-            className="ps-1"
+            className="ps-1 py-0"
             disabled
           >
             <option value="Farmers Board Of Zambia">
@@ -201,7 +204,7 @@ const dobString = farmerData.dob ? formatDateString(farmerData.dob) : "";
             onChange={handleChange}
             isInvalid={!!validationErrors.firstName}
             required
-            className="ps-1"
+            className="ps-1 py-0"
           />
           <Form.Control.Feedback type="invalid">
             {validationErrors.firstName}
@@ -248,8 +251,8 @@ const dobString = farmerData.dob ? formatDateString(farmerData.dob) : "";
             type="date"
             placeholder="Enter date Of Birth"
             name="dob"
-            // value={farmerData.dob}
-            value={dobString}
+            value={farmerData.dob}
+            // value={dobString}
             onChange={handleChange}
             isInvalid={!!validationErrors.dob}
             required
@@ -330,12 +333,12 @@ const dobString = farmerData.dob ? formatDateString(farmerData.dob) : "";
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group controlId="formModifiedBy" className="col-md-3">
-          <Form.Label>Edited By</Form.Label>
+        <Form.Group controlId="formLastModifiedBy" className="col-md-3">
+          <Form.Label>Last Modified By</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Edited By"
-            name="capturedBy"
+            placeholder="Last Modified By"
+            name="lastModifiedBy"
             value={farmerData.lastModifiedBy}
             onChange={handleChange}
             isInvalid={!!validationErrors.lastModifiedBy}
@@ -368,7 +371,7 @@ const dobString = farmerData.dob ? formatDateString(farmerData.dob) : "";
           <Button
             variant="outline-success"
             type="submit"
-            className="me-3 fw-bold"
+            className="me-3 btn btn-sm "
           >
             {farmerId ? "Update" : "Register"}
           </Button>
@@ -376,7 +379,7 @@ const dobString = farmerData.dob ? formatDateString(farmerData.dob) : "";
             <Button
               variant="outline-danger"
               type="button"
-              className="me-2 fw-bold"
+              className="me-2 btn btn-sm "
             >
               Cancel
             </Button>

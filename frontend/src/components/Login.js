@@ -4,6 +4,7 @@ import {  useNavigate, Link } from "react-router-dom";
 import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
+import { ErrorHandler } from "./ErrorHandler";
 // import {handleSuccessAlert} from "./SweetAlerts";
 
 const Login = () => {
@@ -71,11 +72,12 @@ const Login = () => {
      
     } catch (error) {
       console.error("Error during Login:", error);
+      ErrorHandler(`Login Failed: ${error}`);
     }
   };
 
   return (
-    <div className="container  w-50 bg-dark p-3  rounded my-1">
+    <div className="container  login-container bg-dark p-3  rounded my-1">
       <h5 className="my-0 w-100 ps-2 ms-2 text-warning">{"Login"}</h5>
 
       <Form onSubmit={handleSubmit} className=" text-success pt-0">

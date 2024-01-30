@@ -14,6 +14,11 @@ const farmerSchema = new mongoose.Schema({
   updatedDate: { type: Date, default: Date.now },
   capturedBy: { type: String },
   lastModifiedBy: { type: String },
+  batchNumber: {
+    type: String,
+    required: true,
+    unique: true, 
+  },
 });
 
 // Add a compound index on nationalId and year with unique constraint

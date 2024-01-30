@@ -11,7 +11,7 @@ const FarmersList = () => {
   const [farmers, setFarmers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const farmersPerPage = 5; // Adjust as needed
+  const farmersPerPage = 10; // Adjust as needed
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
   
@@ -75,6 +75,8 @@ const FarmersList = () => {
     setCurrentPage(page);
   };
 
+  
+
    const handleEdit = (_id) => {
     navigate(`/edit-farmer/${_id}`);
    }
@@ -90,23 +92,23 @@ const FarmersList = () => {
         <div className=" col-sm-12 col-md-7 col-lg-6 col-xl-4 col-xxl-4">
           <input
             type="text"
-            placeholder="Search by Company, first Name or last Name"
+            placeholder="Search "
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="mb-3 py-1 w-100 border-dark rounded"
+            className="mb-3 py-0 w-50 border-dark rounded"
           />
         </div>
         <Button
-          variant="outline-success"
+          variant="success "
           type="button"
-          className="py-1 mb-3"
+          className="btn btn-sm py-1 mb-3 save-button"
           onClick={handleCreate}
         >
           Add New
         </Button>
       </div>
 
-      <table>
+      <table >
         <thead>
           <tr>
             <th onClick={() => handleSort("company")}>
