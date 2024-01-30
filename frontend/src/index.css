@@ -16,6 +16,24 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+.my-custom-alert {
+  width: auto; 
+  height: auto; 
+  font-size: 12px; 
+  margin: 0;
+  padding: 0;
+}
+.my-custom-icon {
+  /* font-size: 5px;  */
+  margin: 0;
+  padding: 0;
+}
+
+.my-custom-title {
+  /* font-size: 5px;   */
+  margin: 0;
+  padding: 0;
+}
 
 .navbar {
   /* background:  rgba(7, 88, 4, 0.63); */

@@ -14,7 +14,7 @@ const UserList = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 3; // Adjust as needed
+  const usersPerPage = 5; // Adjust as needed
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
     const { auth } = useContext(AuthContext);

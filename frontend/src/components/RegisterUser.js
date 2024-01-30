@@ -3,6 +3,7 @@ import { Form, Button } from "react-bootstrap";
 import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom";  
 import AuthContext from "../context/AuthProvider";
+import { ErrorHandler } from "./ErrorHandler";
 
 const RegisterUser = () => {
   const { userId } = useParams();  
@@ -118,6 +119,7 @@ const RegisterUser = () => {
       navigate("/"); // Updated usage
     } catch (error) {
       console.error("Error during registration/update:", error);
+      ErrorHandler(error);
     }
   };
 
