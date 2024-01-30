@@ -132,12 +132,13 @@ function RegisterFarmer() {
         return;
     }
 
-   
+   let response;
+
     try {
       
       if (farmerId) {
         // Update user if user ID is present in the URL
-        await axios.put(`/farmer?_id=${farmerId}`, farmerData, {
+        response = await axios.put(`/farmer?_id=${farmerId}`, farmerData, {
           headers: {
             Authorization: `${token}`, 
           },
@@ -146,13 +147,15 @@ function RegisterFarmer() {
        
     }else {
         // Register new user if no user ID is present
-        await axios.post(`/farmer`, farmerData, {
-          headers: {
-            Authorization: `${token}`, 
-          },
-        }
-        );
+       response = await axios.post(`/farmer`, farmerData, {
+         headers: {
+           Authorization: `${token}`,
+         },
+       });
       }
+
+      console.log('failed farmers');
+      console.log(response.failedFarmers);
 
       handleSuccessAlert(`Farmer ${farmerId ? 'Updated' : 'Registered'} Successfully.`);
       // Redirect to the Users component after registration/update

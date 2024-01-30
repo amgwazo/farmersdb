@@ -188,3 +188,35 @@ tr:hover {
 } */
 
 /* END Table / Pagination Styling*/
+
+/*
+EXCEL BUTTON STYLING
+*/
+
+.excel-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.excel-icon {
+  width: 30px; 
+  height: 30px; 
+  margin-right: 5px;
+}
+
+.export-text {
+  display: none;
+}
+
+.excel-btn:hover .export-text {
+  display: inline;
+  color: rgb(209, 207, 203);
+}
+
+
+/*
+END EXCEL BUTTON STYLING
+
+*/

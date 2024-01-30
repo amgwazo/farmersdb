@@ -79,30 +79,35 @@ const validateNationalId = (nationalId) => {
 };
 
 const bulkInsertFarmers = async (req, res) => {
+  
+  let resultsArray;
+  const farmersToInsert = req.body;
+   
+  const batchNumber = uuidv4();
+
+  
+
   const company = req.user.company;
   const capturedBy = req.user.username;
   const currentDate = new Date();
   currentDate.setUTCHours(currentDate.getUTCHours() + 2);
 
-  let resultsArray;
-  const farmersToInsert = req.body.data;
-  const batchNumber = uuidv4();
   
-  farmersToInsert.forEach((obj) => {
-    obj.updatedDate = currentDate.getTime();
-    obj.creationDate = currentDate.getTime();
-    obj.capturedBy = capturedBy;
-    obj.lastModifiedBy = capturedBy;
-    obj.company = company;
-    obj.batchNumber = batchNumber;
-
-   
-    let existingDate = new Date(obj.dob);
-    existingDate.setUTCHours(existingDate.getUTCHours() + 2);
-    obj.dob = existingDate.getTime();
-  });
-
   try {
+
+    farmersToInsert.forEach((obj) => {
+      obj.updatedDate = currentDate.getTime();
+      obj.creationDate = currentDate.getTime();
+      obj.capturedBy = capturedBy;
+      obj.lastModifiedBy = capturedBy;
+      obj.company = company;
+      obj.batchNumber = batchNumber;
+
+      let existingDate = new Date(obj.dob);
+      existingDate.setUTCHours(existingDate.getUTCHours() + 2);
+      obj.dob = existingDate.getTime();
+    });
+
     
 
     // Validate national IDs before insertion

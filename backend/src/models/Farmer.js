@@ -16,8 +16,9 @@ const farmerSchema = new mongoose.Schema({
   lastModifiedBy: { type: String },
   batchNumber: {
     type: String,
-    required: true,
-    unique: true, 
+    default: '1',
+    // required: true,
+    //  unique: true, 
   },
 });
 

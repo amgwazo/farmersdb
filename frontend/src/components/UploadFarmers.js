@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import Papa from "papaparse";
 import axios from "../api/axios";
@@ -6,8 +6,11 @@ import { handleSuccessAlert } from "./SweetAlerts";
 import { ErrorHandler } from "./ErrorHandler";
 import { Button } from "react-bootstrap";
 import useAuth from "../hooks/useAuth";
+import FailedUploadFarmers from "./FailedUploadFarmers";
 
 function UploadFarmers() {
+  const [failedFarmers, setFailedFarmers] = useState([]);
+  
   const { auth } = useAuth();
   const { token } = auth;
   const fileInputRef = useRef(null);
@@ -42,13 +45,12 @@ function UploadFarmers() {
         return;
       }
 
-      console.log(jsonData);
+       
+      // console.log(jsonData);
 
       try {
         // Call the API with the entire array
-        await axios.post(
-          "/farmer/farmers",
-          { data: jsonData },
+             await axios.post("/farmer/farmers", jsonData ,
           {
             headers: {
               Authorization: `${token}`,
@@ -60,39 +62,65 @@ function UploadFarmers() {
         console.log("Bulk upload successful");
       } catch (error) {
         ErrorHandler(error);
-        console.error("Bulk upload failed:", error.message);
+        // console.log('failedFarmers...');
+
+        if(error.response.data.failedFarmers){
+         
+         const failedFarmersArray = Object.values(
+           error.response.data.failedFarmers
+         );
+         setFailedFarmers(failedFarmersArray);
+         console.log(typeof failedFarmersArray)
+
+        }
+        
+        // console.error("Bulk upload failed:", error.message);
+
         // Handle error, show message to the user, etc.
       }
     };
 
     reader.readAsBinaryString(file);
+
+
   };
 
   return (
-    <div className="container m-auto w-50 text-warning">
-      <h1>Bulk Farmer Upload!</h1>
-      <p>
-        Please make sure you have properly formatted your data in CSV or Excel
-        before proceeding
-      </p>
-      <div className="flexGrow">
-        <input
-          type="file"
-          accept=".csv, .xlsx, .xls"
-          ref={fileInputRef}
-          style={{ display: "none" }}
-          onChange={handleBulkUpload}
-        />
-        <Button
-          variant="outline-success"
-          type="button"
-          className="py-1 mb-3"
-          onClick={() => fileInputRef.current.click()}
-        >
-          Upload
-        </Button>
-      </div>
-    </div>
+    <>
+      
+      {failedFarmers.length > 0 && (
+        <FailedUploadFarmers farmers={failedFarmers}></FailedUploadFarmers>
+      )}
+
+      {failedFarmers.length === 0 && (
+        <>
+          <div className="container m-auto w-50 text-light">
+            <h1>Bulk Farmer Upload! </h1>
+            <p>
+              Please make sure you have properly formatted your data in CSV or
+              Excel before proceeding
+            </p>
+            <div className="flexGrow">
+              <input
+                type="file"
+                accept=".csv, .xlsx, .xls"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleBulkUpload}
+              />
+              <Button
+                variant="outline-success"
+                type="button"
+                className="py-1 mb-3 save-button"
+                onClick={() => fileInputRef.current.click()}
+              >
+                Upload
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
+    </>
   );
 }
 
