@@ -70,6 +70,12 @@ form {
   /* font-weight:bolder; */
 }
 
+form p {
+  
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 16px;
+}
+
 .form-control {
   background-color: #ffffffd7;
   padding-top: 0;
@@ -201,9 +207,11 @@ EXCEL BUTTON STYLING
 }
 
 .excel-icon {
-  width: 30px; 
-  height: 30px; 
+  width: 35px; 
+  height: 35px; 
   margin-right: 5px;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .export-text {

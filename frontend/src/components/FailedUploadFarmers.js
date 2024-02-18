@@ -137,7 +137,7 @@ const FailedUploadFarmers = ({ farmers }) => {
               )}
             </th>
 
-            <th>Edit</th>
+            <th>Error Description</th>
           </tr>
         </thead>
         <tbody>

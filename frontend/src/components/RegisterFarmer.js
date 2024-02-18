@@ -6,6 +6,8 @@ import useAuth from '../hooks/useAuth';
 import { format } from "date-fns";
 import { ErrorHandler } from './ErrorHandler';
 import { handleSuccessAlert } from './SweetAlerts';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function RegisterFarmer() {
 
@@ -68,7 +70,8 @@ function RegisterFarmer() {
             firstName: farmer.firstName,
             lastName: farmer.lastName,
             nationalId: farmer.nationalId,
-            dob: farmer.dob,
+            dob:  farmer.dob,
+            //farmer.dob,
             gender: farmer.gender,
             year: farmer.year,
             companyId: farmer.companyId,
@@ -84,10 +87,14 @@ function RegisterFarmer() {
       };
 
       fetchFarmerDetails();
+      
     } else {
       setFarmerData({ year: "2024", company: userCompany });
     }
+
+    
   }, [farmerId, token, userCompany]);
+
 
   // const dobString = farmerData.dob
   //   ? new Date(farmerData.dob).toISOString().split("T")[0]
@@ -154,8 +161,6 @@ function RegisterFarmer() {
        });
       }
 
-      console.log('failed farmers');
-      console.log(response.failedFarmers);
 
       handleSuccessAlert(`Farmer ${farmerId ? 'Updated' : 'Registered'} Successfully.`);
       // Redirect to the Users component after registration/update
@@ -166,6 +171,13 @@ function RegisterFarmer() {
     } 
   };
 
+const handleDateChange = (date) => {
+  // Convert selected date to ISO string format and update state
+  setFarmerData({
+    ...farmerData,
+    dob: date.toISOString(),
+  });
+};
 
   return (
     <div className="container w-75 bg-light p-3 bg-dark  rounded my-1 ps-md-4 pe-md-4">
@@ -248,14 +260,14 @@ function RegisterFarmer() {
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group controlId="formdob" className="col-md-3">
+        {/* <Form.Group controlId="formdob" className="col-md-3">
           <Form.Label>Date Of Birth</Form.Label>
           <Form.Control
-            type="date"
+            type="text"
             placeholder="Enter date Of Birth"
             name="dob"
-            value={farmerData.dob}
-            // value={dobString}
+            // value="2009-02-18" 
+            value={farmerData.dob || ""}
             onChange={handleChange}
             isInvalid={!!validationErrors.dob}
             required
@@ -264,6 +276,19 @@ function RegisterFarmer() {
           <Form.Control.Feedback type="invalid">
             {validationErrors.dob}
           </Form.Control.Feedback>
+        </Form.Group> */}
+<Form.Group controlId="formdob" className="col-md-3">
+          <Form.Label>Date Of Birth</Form.Label>
+        <DatePicker
+          placeholderText="Enter date Of Birth"
+          // selected={new Date(farmerData.dob)} // Convert farmerData.dob string to Date object
+          selected={farmerData.dob ? new Date(farmerData.dob) : null}
+          onChange={(date) => handleDateChange(date)}
+          dateFormat="yyyy-MM-dd"
+          isInvalid={!!validationErrors.dob}
+          required
+          className="ps-1"
+        />
         </Form.Group>
 
         <Form.Group controlId="formGender" className="col-md-3">
@@ -306,7 +331,6 @@ function RegisterFarmer() {
           <Form.Label>Captured By</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Captured By"
             name="capturedBy"
             value={farmerData.capturedBy}
             onChange={handleChange}
@@ -323,7 +347,6 @@ function RegisterFarmer() {
           <Form.Label>creation Date</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Creation Date"
             name="CreationDate"
             value={farmerData.creationDate}
             onChange={handleChange}
@@ -340,7 +363,6 @@ function RegisterFarmer() {
           <Form.Label>Last Modified By</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Last Modified By"
             name="lastModifiedBy"
             value={farmerData.lastModifiedBy}
             onChange={handleChange}
@@ -357,7 +379,6 @@ function RegisterFarmer() {
           <Form.Label>Updated Date</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Updated Date"
             name="updatedDate"
             value={farmerData.updatedDate}
             onChange={handleChange}
