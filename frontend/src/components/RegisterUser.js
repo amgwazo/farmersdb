@@ -123,6 +123,8 @@ const RegisterUser = () => {
     }
   };
 
+
+  
   return (
     <div className="container w-75 bg-light p-3 bg-dark  rounded my-1">
       <h5 className="my-0 w-100 ms-2 text-warning ps-0">

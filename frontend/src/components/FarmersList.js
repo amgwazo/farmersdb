@@ -5,8 +5,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "react-bootstrap";
 import AuthContext from "../context/AuthProvider";
+import { numberFormatOptions } from "./NumberFormats";
 
 const FarmersList = () => {
+
   const navigate = useNavigate();
   const [farmers, setFarmers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -63,7 +65,7 @@ const FarmersList = () => {
       farmer.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       farmer.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       farmer.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      farmer.nationalId?.toLowerCase().includes(searchTerm.toLowerCase())
+      farmer.nationalId?.toLowerCase().includes(searchTerm.toLowerCase()) 
   );
 
   const indexOfLastFarmer = currentPage * farmersPerPage;
@@ -84,6 +86,7 @@ const FarmersList = () => {
    const handleCreate = () => {
      navigate(`/register-farmer`);
    };
+
 
   return (
     <div className="table-container mt-4 ms-5 me-5">
@@ -108,7 +111,7 @@ const FarmersList = () => {
         </Button>
       </div>
 
-      <table >
+      <table>
         <thead>
           <tr>
             <th onClick={() => handleSort("company")}>
@@ -145,6 +148,15 @@ const FarmersList = () => {
               )}
             </th>
 
+            <th>
+              Loan Amount
+              {sortConfig.key === "loanAmount" && (
+                <span className="table-sort-arrow ">
+                  {sortConfig.direction === "asc" ? " ▲" : " ▼"}
+                </span>
+              )}
+            </th>
+
             <th>Edit</th>
           </tr>
         </thead>
@@ -155,6 +167,9 @@ const FarmersList = () => {
               <td>{farmer.firstName}</td>
               <td>{farmer.lastName}</td>
               <td>{farmer.nationalId}</td>
+              <td>
+                {farmer.loanAmount.toLocaleString("en-US", numberFormatOptions)}
+              </td>
               <td>
                 <Link to={`/edit-farmer/${farmer._id}`}>
                   <Button variant="dark" size="sm">

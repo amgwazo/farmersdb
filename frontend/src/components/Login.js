@@ -68,7 +68,7 @@ const Login = () => {
 
       // handleSuccessAlert("Login successful!");
          // Redirect to the Users component after registration/update
-      navigate("/"); 
+      navigate("/farmers"); 
      
     } catch (error) {
       console.error("Error during Login:", error);

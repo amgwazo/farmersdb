@@ -2,11 +2,12 @@ const { Types } = require("mongoose");
 const Farmer = require("../models/Farmer");
 
 const { v4: uuidv4 } = require("uuid");
+const { strToNumConverter } = require("../helpers/strToNumConverter.Js");
 
 const createFarmer = async (req, res) => {
   try {
     const {firstName, lastName, nationalId, dob, gender, year,
-      companyId,
+      companyId, loanAmount
        } = req.body;
 
       const company = req.user.company;
@@ -23,6 +24,8 @@ const createFarmer = async (req, res) => {
       return res.status(400).json({ error: "Invalid national ID format" });
     }
 
+    const unFormattedLoanAmount = strToNumConverter(loanAmount);
+
     const newFarmer = new Farmer({
       company,
       firstName,
@@ -31,6 +34,7 @@ const createFarmer = async (req, res) => {
       dob,
       gender,
       year,
+      loanAmount: unFormattedLoanAmount,
       companyId,
       capturedBy,
       lastModifiedBy: capturedBy,
@@ -159,9 +163,9 @@ const bulkInsertFarmers = async (req, res) => {
     const formattedFailedFarmers = failedFarmers.map((failure) => {
     //   const index = farmersToInsert.findIndex((farmer) => farmer.nationalId === failure.nationalId);
     //   const { firstName, lastName, nationalId, dob, gender, year, companyId } = farmersToInsert[index];
-    const { company, firstName, lastName, nationalId, dob, gender, year, companyId } = failure;
+    const { company, firstName, lastName, nationalId, dob, gender, year, companyId, loanAmount } = failure;
       return {
-        details: {company, firstName, lastName, nationalId, dob, gender, year, companyId },
+        details: {company, firstName, lastName, nationalId, dob, gender, year, companyId, loanAmount },
         // index,
       };
     });
@@ -316,13 +320,22 @@ const updateFarmer = async (req, res) => {
       dob,
       gender,
       year,
+      loanAmount,
       companyId,
       capturedBy,
     } = req.body;
 
+    const unFormattedLoanAmount = strToNumConverter(loanAmount);
+
+  //   // Remove commas from the loanAmount value
+  //  let unformattedLoanAmount = req.body.loanAmount.replace(/,/g, "");
+
+  //   // Parse the loanAmount value into a number
+  //    unformattedLoanAmount = parseFloat(loanAmount);
+
     const lastModifiedBy = req.user.username;
-    
-      const updatedDate = new Date();
+
+    const updatedDate = new Date();
 
     // Validate national ID format (000000/00/0)
     const nationalIdRegex = /^\d{6}\/\d{2}\/\d{1}$/;
@@ -351,6 +364,7 @@ const updateFarmer = async (req, res) => {
         dob,
         gender,
         year,
+        loanAmount: unFormattedLoanAmount,
         companyId,
         capturedBy,
         lastModifiedBy,

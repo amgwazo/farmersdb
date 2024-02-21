@@ -1,22 +1,25 @@
-import React, {  useEffect, useState } from 'react'
-import { Form, Button } from 'react-bootstrap';
-import {  Link, useNavigate, useParams } from 'react-router-dom';
-import axios from '../api/axios';
-import useAuth from '../hooks/useAuth';
+import React, { useEffect, useState } from "react";
+import { Form, Button } from "react-bootstrap";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import axios from "../api/axios";
+import useAuth from "../hooks/useAuth";
 import { format } from "date-fns";
-import { ErrorHandler } from './ErrorHandler';
-import { handleSuccessAlert } from './SweetAlerts';
+import { ErrorHandler } from "./ErrorHandler";
+import { handleSuccessAlert } from "./SweetAlerts";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import InputMask from "react-input-mask";
+import { numberFormatOptions } from "./NumberFormats";
 
 function RegisterFarmer() {
+ 
 
   const { auth } = useAuth();
-   const { token, userCompany } = auth;
-  
-  const { farmerId } = useParams();  
-  
-   const navigate = useNavigate();  
+  const { token, userCompany } = auth;
+
+  const { farmerId } = useParams();
+
+  const navigate = useNavigate();
 
   const [farmerData, setFarmerData] = useState({
     company: userCompany,
@@ -26,6 +29,7 @@ function RegisterFarmer() {
     dob: "",
     gender: "",
     year: "2024",
+    loanAmount: 0,
     companyId: "",
     creationDate: "",
     updatedDate: "",
@@ -41,6 +45,7 @@ function RegisterFarmer() {
     dob: "",
     gender: "",
     year: "",
+    loanAmount: 0,
     companyId: "",
     creationDate: "",
     updatedDate: "",
@@ -64,16 +69,17 @@ function RegisterFarmer() {
             }
           );
           const farmer = response.data;
-          
+
           setFarmerData({
             company: farmer.company,
             firstName: farmer.firstName,
             lastName: farmer.lastName,
             nationalId: farmer.nationalId,
-            dob:  farmer.dob,
+            dob: farmer.dob,
             //farmer.dob,
             gender: farmer.gender,
             year: farmer.year,
+            loanAmount: farmer.loanAmount,
             companyId: farmer.companyId,
             creationDate: format(farmer.creationDate, "MMMM d yyyy, h:mm a"),
             updatedDate: format(farmer.updatedDate, "MMMM d yyyy, h:mm a"),
@@ -87,39 +93,56 @@ function RegisterFarmer() {
       };
 
       fetchFarmerDetails();
-      
     } else {
       setFarmerData({ year: "2024", company: userCompany });
     }
-
-    
   }, [farmerId, token, userCompany]);
-
 
   // const dobString = farmerData.dob
   //   ? new Date(farmerData.dob).toISOString().split("T")[0]
   //   : "";
 
-    // const formatDateString = (dateString) => {
-    //   const date = new Date(dateString);
-    //   const options = { day: "numeric", month: "short", year: "numeric" };
-    //   return date.toLocaleDateString("en-GB", options);
-    // };
+  // const formatDateString = (dateString) => {
+  //   const date = new Date(dateString);
+  //   const options = { day: "numeric", month: "short", year: "numeric" };
+  //   return date.toLocaleDateString("en-GB", options);
+  // };
 
-    
-// const dobString = farmerData.dob ? formatDateString(farmerData.dob) : "";
-
+  // const dobString = farmerData.dob ? formatDateString(farmerData.dob) : "";
 
   const handleChange = (e) => {
-    setFarmerData({ ...farmerData, [e.target.name]: e.target.value });
-    setValidationErrors({ ...validationErrors, [e.target.name]: "" });
+
+     const { name, value } = e.target;
+
+    // Check if the field is 'loanAmount'
+    if (name === "loanAmount") {
+      // Format the input value with thousand separators
+      const formattedValue = value
+        .replace(/[^\d.]/g, "")
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+      // Update the state with the formatted value and clear validation errors
+      setFarmerData({ ...farmerData, [name]: formattedValue });
+    } else {
+      // For other fields, update the state with the unformatted value and clear validation errors
+      setFarmerData({ ...farmerData, [name]: value });
+    }
+
+    setValidationErrors({ ...validationErrors, [name]: "" });
+
+    // setFarmerData({ ...farmerData, [e.target.name]: e.target.value });
+    // setValidationErrors({ ...validationErrors, [e.target.name]: "" });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validate form inputs
-    if (!farmerData.firstName || !farmerData.lastName || !farmerData.nationalId) {
+    if (
+      !farmerData.firstName ||
+      !farmerData.lastName ||
+      !farmerData.nationalId
+    ) {
       setValidationErrors({
         firstName: !farmerData.firstName ? "First name is required" : "",
         lastName: !farmerData.lastName ? "Last name is required" : "",
@@ -128,56 +151,69 @@ function RegisterFarmer() {
       return;
     }
 
-     // Validate national ID format (000000/00/0)
+    // Validate national ID format (000000/00/0)
     const nationalIdRegex = /^\d{6}\/\d{2}\/\d{1}$/;
 
     if (!nationalIdRegex.test(farmerData.nationalId)) {
-        setValidationErrors({
-          ...validationErrors,
-          nationalId: "National ID should be 9 Numbers in the format 000000/00/0 ",
-        });
-        return;
+      setValidationErrors({
+        ...validationErrors,
+        nationalId:
+          "National ID should be 9 Numbers in the format 000000/00/0 ",
+      });
+      return;
     }
 
-   let response;
+    //  let response;
 
     try {
-      
       if (farmerId) {
         // Update user if user ID is present in the URL
-        response = await axios.put(`/farmer?_id=${farmerId}`, farmerData, {
+        // response = await axios.put(`/farmer?_id=${farmerId}`, farmerData, {
+        await axios.put(`/farmer?_id=${farmerId}`, farmerData, {
           headers: {
-            Authorization: `${token}`, 
+            Authorization: `${token}`,
           },
-        }
-        );
-       
-    }else {
+        });
+      } else {
         // Register new user if no user ID is present
-       response = await axios.post(`/farmer`, farmerData, {
-         headers: {
-           Authorization: `${token}`,
-         },
-       });
+        //  response = await axios.post(`/farmer`, farmerData, {
+        await axios.post(`/farmer`, farmerData, {
+          headers: {
+            Authorization: `${token}`,
+          },
+        });
       }
 
-
-      handleSuccessAlert(`Farmer ${farmerId ? 'Updated' : 'Registered'} Successfully.`);
+      handleSuccessAlert(
+        `Farmer ${farmerId ? "Updated" : "Registered"} Successfully.`
+      );
       // Redirect to the Users component after registration/update
-      navigate("/");  
+      navigate("/farmers");
     } catch (error) {
-
       ErrorHandler(error);
-    } 
+    }
   };
 
-const handleDateChange = (date) => {
-  // Convert selected date to ISO string format and update state
-  setFarmerData({
-    ...farmerData,
-    dob: date.toISOString(),
-  });
-};
+  const handleDateChange = (date) => {
+    // Convert selected date to ISO string format and update state
+    setFarmerData({
+      ...farmerData,
+      dob: date.toISOString(),
+    });
+  };
+
+  
+   function formatNumberWithCommas(number) {
+    //  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+     if (number == null) return ""; // Return empty string for undefined or null numbers
+     console.log(number)
+     console.log(number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+   }
+
+  //  const testNumber = 3500;
+  //  console.log(formatNumberWithCommas(testNumber));
 
   return (
     <div className="container w-75 bg-light p-3 bg-dark  rounded my-1 ps-md-4 pe-md-4">
@@ -207,6 +243,53 @@ const handleDateChange = (date) => {
               Mkhuto Agriculture Services
             </option>
           </Form.Control>
+        </Form.Group>
+
+        <div className="col-xs-0 col-md-3"></div>
+
+        <Form.Group controlId="formYear" className="col-md-3">
+          <Form.Label>Harvest Season</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Harvest Season"
+            name="year"
+            value={farmerData.year}
+            onChange={handleChange}
+            isInvalid={!!validationErrors.year}
+            required
+            className="ps-1"
+            disabled
+          />
+          <Form.Control.Feedback type="invalid">
+            {validationErrors.year}
+          </Form.Control.Feedback>
+        </Form.Group>
+
+        <div className="col-xs-0 col-md-6"></div>
+
+        <div className="col-xs-0 col-md-3"></div>
+
+        <Form.Group controlId="formLoanAmount" className="col-md-3">
+          <Form.Label>Loan Amount</Form.Label>
+          <InputMask
+            // mask="9999999999" // Only allows digits
+            maskChar=""
+            type="text"
+            placeholder="Enter Loan Amount"
+            name="loanAmount"
+            value={formatNumberWithCommas(farmerData.loanAmount)}
+            // value={farmerData.loanAmount.toLocaleString(
+            //   "en-US",
+            //   numberFormatOptions
+            // )}
+            onChange={handleChange}
+            isInvalid={!!validationErrors.loanAmount}
+            required
+            className="ps-1 py-0"
+          />
+          <Form.Control.Feedback type="invalid">
+            {validationErrors.loanAmount}
+          </Form.Control.Feedback>
         </Form.Group>
 
         <Form.Group controlId="formFirstName" className="col-md-6">
@@ -277,18 +360,18 @@ const handleDateChange = (date) => {
             {validationErrors.dob}
           </Form.Control.Feedback>
         </Form.Group> */}
-<Form.Group controlId="formdob" className="col-md-3">
+        <Form.Group controlId="formdob" className="col-md-3">
           <Form.Label>Date Of Birth</Form.Label>
-        <DatePicker
-          placeholderText="Enter date Of Birth"
-          // selected={new Date(farmerData.dob)} // Convert farmerData.dob string to Date object
-          selected={farmerData.dob ? new Date(farmerData.dob) : null}
-          onChange={(date) => handleDateChange(date)}
-          dateFormat="yyyy-MM-dd"
-          isInvalid={!!validationErrors.dob}
-          required
-          className="ps-1"
-        />
+          <DatePicker
+            placeholderText="Enter date Of Birth"
+            // selected={new Date(farmerData.dob)} // Convert farmerData.dob string to Date object
+            selected={farmerData.dob ? new Date(farmerData.dob) : null}
+            onChange={(date) => handleDateChange(date)}
+            dateFormat="yyyy-MM-dd"
+            isInvalid={!!validationErrors.dob}
+            required
+            className="ps-1"
+          />
         </Form.Group>
 
         <Form.Group controlId="formGender" className="col-md-3">
@@ -307,25 +390,7 @@ const handleDateChange = (date) => {
           </Form.Control>
         </Form.Group>
 
-        <Form.Group controlId="formYear" className="col-md-3">
-          <Form.Label>Harvest Season</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Harvest Season"
-            name="year"
-            value={farmerData.year}
-            onChange={handleChange}
-            isInvalid={!!validationErrors.year}
-            required
-            className="ps-1"
-            disabled
-          />
-          <Form.Control.Feedback type="invalid">
-            {validationErrors.year}
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        <div className="col-xs-0 col-md-6"></div>
+        <div className="col-xs-0 col-md-3"></div>
 
         <Form.Group controlId="formCapturedBy" className="col-md-3">
           <Form.Label>Captured By</Form.Label>
@@ -412,7 +477,6 @@ const handleDateChange = (date) => {
       </Form>
     </div>
   );
-};
+}
 
-
-export default RegisterFarmer
+export default RegisterFarmer;

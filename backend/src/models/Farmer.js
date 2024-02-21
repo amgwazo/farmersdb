@@ -14,6 +14,7 @@ const farmerSchema = new mongoose.Schema({
   updatedDate: { type: Date, default: Date.now },
   capturedBy: { type: String },
   lastModifiedBy: { type: String },
+  loanAmount: { type: Number, default:0},
   batchNumber: {
     type: String,
     default: '1',
