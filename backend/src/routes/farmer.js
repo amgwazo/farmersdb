@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const farmerController = require("../controllers/farmerController");
+const purchaseController = require("../controllers/commodityPurchases");
 const verifyToken = require("../middleware/auth");
 
 // Authentication middleware to secure these routes
@@ -9,9 +10,11 @@ router.use(verifyToken);
 
 // Both users and admins can create a new farmer and read the list of farmers
 router.post("/", farmerController.createFarmer);
+router.post("/purchase/create", purchaseController.createPurchase);
 
 // Route for bulk insert of farmers
 router.post('/farmers', farmerController.bulkInsertFarmers);
+
 router.get("/", farmerController.getFarmers);
 router.get("/:nationalId", farmerController.getFarmerByNationalId);
 router.get("/filtered/farmer", farmerController.getFilteredFarmer);

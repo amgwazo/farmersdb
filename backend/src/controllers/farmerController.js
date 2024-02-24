@@ -7,7 +7,7 @@ const { strToNumConverter } = require("../helpers/strToNumConverter.Js");
 const createFarmer = async (req, res) => {
   try {
     const {firstName, lastName, nationalId, dob, gender, year,
-      companyId, loanAmount
+       loanAmount
        } = req.body;
 
       const company = req.user.company;

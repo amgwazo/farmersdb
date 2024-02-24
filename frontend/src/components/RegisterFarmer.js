@@ -8,8 +8,7 @@ import { ErrorHandler } from "./ErrorHandler";
 import { handleSuccessAlert } from "./SweetAlerts";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import InputMask from "react-input-mask";
-import { numberFormatOptions } from "./NumberFormats";
+import InputMask from "react-input-mask"; 
 
 function RegisterFarmer() {
  

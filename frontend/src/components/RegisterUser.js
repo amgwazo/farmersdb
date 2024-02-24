@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Form, Button } from "react-bootstrap";
-import axios from "axios";
+import axios from "../api/axios";
 import { useParams, useNavigate, Link } from "react-router-dom";  
 import AuthContext from "../context/AuthProvider";
 import { ErrorHandler } from "./ErrorHandler";
@@ -62,6 +62,7 @@ const RegisterUser = () => {
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
     setValidationErrors({ ...validationErrors, [e.target.name]: "" });
+    console.log(userData.company)
   };
 
   const handleSubmit = async (e) => {
@@ -116,7 +117,7 @@ const RegisterUser = () => {
       }
 
       // Redirect to the Users component after registration/update
-      navigate("/"); // Updated usage
+      navigate("/view-users"); // Updated usage
     } catch (error) {
       console.error("Error during registration/update:", error);
       ErrorHandler(error);
@@ -140,8 +141,9 @@ const RegisterUser = () => {
             onChange={handleChange}
             className="ps-1"
           >
-            <option value="">
-              Select Compnay
+            <option value="">Select Company</option>
+            <option value="Kanele Holdings">
+              Kanele Holdings
             </option>
             <option value="Farmers Board Of Zambia">
               Farmers Board Of Zambia

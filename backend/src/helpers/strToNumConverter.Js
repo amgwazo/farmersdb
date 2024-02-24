@@ -29,16 +29,6 @@ const strToNumConverter = (strNum) => {
   return largeNumber;
 };
 
-// // Example usage:
-// const num1 = "  1,234,567  ";
-// const num2 = "73,500"; // Might be a very large number
-
-// const result1 = removeCommasSafely(num1);
-// const result2 = removeCommasSafely(num2);
-
-// console.log(result1); // Output: 1234567
-// console.log(result2); // Output: 73500 (or BigInt value if very large)
-
 module.exports = {
   strToNumConverter,
 };

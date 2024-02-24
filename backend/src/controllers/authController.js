@@ -4,12 +4,18 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const User = require("../models/user");
 const { Types } = require("mongoose");
+const Company = require("../models/Company");
 
 const register = async (req, res) => {
-  try {
-    const { username, password, role, company } = req.body;
+ 
 
+  
+
+  try {
+     const { username, password, role, company } = req.body;
+     
     const existingUser = await User.findOne({ username });
+    const companyData = await Company.findOne({ name: company });
 
     if (existingUser) {
       return res.status(400).json({ message: "Username already exists" });
@@ -22,6 +28,7 @@ const register = async (req, res) => {
       password: hashedPassword,
       role: role || "user", // Default to 'user' if no role is provided
       company: company,
+      companyId: companyData._id,
     });
 
     await newUser.save();
@@ -51,7 +58,7 @@ const login = async (req, res) => {
 
     
     const token = jwt.sign(
-      { id: user._id, username: user.username, role: user.role, company: user.company},
+      { id: user._id, username: user.username, role: user.role, company: user.company, companyId: user.companyId},
       process.env.JWT_SECRET,
       {
         expiresIn: "1h",
@@ -69,10 +76,12 @@ const login = async (req, res) => {
 const updateUser = async (req, res) => {
   const { _id } = req.query;
   const { username, role, company } = req.body;
-
   try {
     // Check if the new username already exists
     const existingUser = await User.findOne({ username, _id: { $ne: _id } });
+    const companyData = await Company.findOne({ name: company });
+    console.log(company)
+    console.log(companyData);
 
     if (existingUser) {
       return res.status(400).json({ message: "Username already exists" });
@@ -81,7 +90,7 @@ const updateUser = async (req, res) => {
     // Update the user
     const updatedUser = await User.findByIdAndUpdate(
       _id,
-      { username, role, company },
+      { username, role, company, companyId: companyData._id },
       { new: true }
     );
 
