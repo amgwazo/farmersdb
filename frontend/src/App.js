@@ -15,6 +15,7 @@ import NotFound from "./components/NotFound";
 import Logout from "./components/Logout";
 import Unauthorized from "./components/UnAuthorized";
 import useAuth from "./hooks/useAuth";
+import PurchaseForm from "./components/PurchaseForm";
 
 const App = () => {
 
@@ -73,6 +74,11 @@ const App = () => {
                   <Nav.Link as={Link} to="/upload-farmers">
                     Import
                   </Nav.Link>
+
+                  <Nav.Link as={Link} to="/purchases">
+                    Purchases
+                  </Nav.Link>
+
                   <Nav.Link as={Link} to="/view-users">
                     Users
                   </Nav.Link>
@@ -105,6 +111,7 @@ const App = () => {
         <Route
           element={<RequireAuth allowedRoles={[ROLES.User, ROLES.Admin]} />}
         >
+          <Route path="/purchases" element={<PurchaseForm />} />
           <Route path="/farmers" element={<FarmersList />} />
           <Route path="/register-farmer" element={<RegisterFarmer />} />
           <Route path="/edit-farmer/:farmerId" element={<RegisterFarmer />} />
