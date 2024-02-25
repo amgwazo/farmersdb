@@ -3,6 +3,7 @@ import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
 import { handleSuccessAlert } from "./SweetAlerts";
 import { useNavigate } from "react-router-dom";
+import { Form } from "react-bootstrap";
 
 const PurchaseForm = () => {
   const { auth } = useAuth();
@@ -133,12 +134,12 @@ const handleInputChange = (e, index) => {
   
 
   return (
-    <div className="container">
-      <h2 className="mb-4">Create New Purchase</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="row mb-3">
-          <div className="col-md-12">
-            <label>Select Farmer:</label>
+    <div className="container  w-75 bg-light p-3 bg-dark text-success rounded my-1 ps-md-4 pe-md-4">
+      <h5 className="mb-4  text-warning ">Create New Purchase</h5>
+      <Form onSubmit={handleSubmit}>
+        <div className="row mb-3 ">
+          <div className="col-md-4">
+            <h5 >Farmer Details</h5>
             <select className="form-select" onChange={handleSelectFarmer}>
               <option value="">-- Select Farmer --</option>
               {farmers.map((farmer) => (
@@ -175,7 +176,7 @@ const handleInputChange = (e, index) => {
         )}
         <div className="row mb-3">
           <div className="col-md-12">
-            <h3>Commodities</h3>
+            <h5 >Commodities</h5>
             <table className="table">
               <thead>
                 <tr>
@@ -192,7 +193,7 @@ const handleInputChange = (e, index) => {
                       <select
                         className="form-select"
                         name="commodity"
-                        value={commodity._id}  
+                        value={commodity._id}
                         onChange={(e) => handleInputChange(e, index)}
                       >
                         <option value="">-- Select Commodity --</option>
@@ -250,7 +251,7 @@ const handleInputChange = (e, index) => {
         <button type="submit" className="btn btn-success">
           Submit
         </button>
-      </form>
+      </Form>
       {message && <p className="text-success mt-3">{message}</p>}
       {error && <p className="text-danger mt-3">{error}</p>}
     </div>
