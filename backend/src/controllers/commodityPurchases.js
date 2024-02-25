@@ -6,6 +6,12 @@ const Company = require("../models/Company");
 const createPurchase = async (req, res) => {
   const { farmerId, commodities } = req.body;
 
+  
+      const capturedBy = req.user.username;
+
+      const currentDate = new Date();
+      currentDate.setUTCHours(currentDate.getUTCHours() + 2);
+
   try {
     // Retrieve farmer details from the model
     const farmer = await Farmer.findOne({ _id: farmerId });
@@ -71,10 +77,10 @@ const createPurchase = async (req, res) => {
         (allowedCommodity) => allowedCommodity.name === commodity.commodity
       );
       const {name, price } = allowedCommodity;
-      const {quantity } = commodity;
+      const {quantity, _id, commodityId } = commodity;
       const commodityNetPayment = price * quantity;
 
-      commodityValues.push({commodity: name, quantity, price})
+      commodityValues.push({ commodityId, commodity: name, quantity, price})
 
       grossAmount += commodityNetPayment;
     });
@@ -92,6 +98,10 @@ const createPurchase = async (req, res) => {
       recoveredAmount: currentRecovery,
       netAmount: netPayment,
       companyId: req.user.companyId,
+      capturedBy,
+      lastModifiedBy: capturedBy,
+      creationDate: currentDate.getTime(),
+      updatedDate: currentDate.getTime(),
     });
 
 

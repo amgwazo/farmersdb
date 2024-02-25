@@ -8,7 +8,12 @@ const companySchema = new mongoose.Schema({
   allowedCommodities: {
     type: [
       {
-        name : String,
+        _id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Commodity",
+          required: true,
+        },
+        name: String,
         price: Number,
       },
     ],

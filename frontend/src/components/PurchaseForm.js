@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
+import { handleSuccessAlert } from "./SweetAlerts";
+import { useNavigate } from "react-router-dom";
 
 const PurchaseForm = () => {
   const { auth } = useAuth();
   const { token } = auth;
+  const navigate = useNavigate();
 
   //const { token, userCompany } = auth;
   const [farmers, setFarmers] = useState([]);
@@ -69,12 +72,16 @@ const PurchaseForm = () => {
 
 const handleInputChange = (e, index) => {
   const { name, value } = e.target;
+
+  console.log("input change: ", name, " ", value)
   const list = [...commodities];
   const selectedCommodity = commodityList.find(
     (commodity) => commodity._id === value
   );
-  list[index][name] = value; // Update the commodity _id
-  list[index].price = selectedCommodity ? selectedCommodity.price : ""; // Update the commodity price
+  list[index][name] = value; //commodity _id
+  list[index].commodityId = value;
+  list[index].price = selectedCommodity ? selectedCommodity.price : ""; 
+  list[index].commodity = selectedCommodity ? selectedCommodity.name : ""; 
   setCommodities(list);
 };
 
@@ -109,11 +116,21 @@ const handleInputChange = (e, index) => {
       );
       setMessage(response.data.message);
       setError("");
+
+      
+    handleSuccessAlert(
+      `Commodity Purchase saved Successfully.`
+    );
+    // Redirect to the Users component after registration/update
+    navigate("/farmers");
+
     } catch (err) {
       setError(err.response.data.error);
       setMessage("");
     }
+
   };
+  
 
   return (
     <div className="container">

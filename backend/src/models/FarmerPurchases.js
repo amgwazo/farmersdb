@@ -13,6 +13,11 @@ const commodityPurchasesSchema = new mongoose.Schema({
   },
   commodities: [
     {
+      commodityId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Commodity",
+        required: true,
+      },
       commodity: {
         type: String,
         required: true,
@@ -39,6 +44,10 @@ const commodityPurchasesSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  creationDate: { type: Date, default: Date.now },
+  updatedDate: { type: Date, default: Date.now },
+  capturedBy: { type: String },
+  lastModifiedBy: { type: String },
 });
 
 const CommodityPurchases = mongoose.model(
