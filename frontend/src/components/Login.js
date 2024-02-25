@@ -54,10 +54,11 @@ const Login = () => {
 
       const roles = decodedToken.role;
       const userCompany = decodedToken.company;
+      const userCompanyId = decodedToken.companyId;
 
       const token = response?.data?.token;
       // const roles = response?.data?.role;
-      setAuth({ userCompany, userData, roles, token });
+      setAuth({ userCompanyId, userCompany, userData: {username: decodedToken.username, password: ""}, roles, token });
       setUserData({ ...userData, username: "" });
       // setUserData({ ...userData, password: "" });
       

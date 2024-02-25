@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const authRoutes = require("./src/routes/auth");
 const verifyToken = require("./src/middleware/auth");
 const farmerRoutes = require("./src/routes/farmer");
+const setupRoutes = require("./src/routes/setup")
 const cors = require("cors");
 
 
@@ -19,6 +20,7 @@ require("./src/config/db");
 app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/farmer", farmerRoutes);
+app.use("/setup", setupRoutes);
 
 
 
