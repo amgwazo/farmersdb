@@ -6,6 +6,10 @@ const Company = require("../models/Company");
 const createPurchase = async (req, res) => {
   const { farmerId, commodities } = req.body;
 
+  commodities.forEach((commodity) => {
+    console.log(commodity);
+  });
+
   
       const capturedBy = req.user.username;
 
@@ -15,7 +19,6 @@ const createPurchase = async (req, res) => {
   try {
     // Retrieve farmer details from the model
     const farmer = await Farmer.findOne({ _id: farmerId });
-    // console.log(farmer);
 
     // Retrieve the allowed commodities and their prices from the company model
 
@@ -31,13 +34,12 @@ const createPurchase = async (req, res) => {
 
     // Retrieve all previous transactions for the given farmerId
     const prevPurchases = await CommodityPurchases.find({ farmerId });
-    console.log(prevPurchases)
+    
 
     const loanRecoveries = prevPurchases.map(
       (purchase) => purchase.recoveredAmount
     );
 
-    console.log("loan recoveries", loanRecoveries)
 
     // Calculate the total loan recoveries
     const totalLoanRecoveries = loanRecoveries.reduce(
@@ -45,7 +47,7 @@ const createPurchase = async (req, res) => {
       0
     );
 
-    console.log("total loan recoveries", totalLoanRecoveries);
+    
 
     // Validate if the company is allowed to buy the commodities
     const invalidCommodities = commodities.filter((commodity) => {
@@ -65,9 +67,7 @@ const createPurchase = async (req, res) => {
     // Calculate the gross amount and loan balance
     let grossAmount = 0;
     const farmerLoan = farmer.loanAmount ? farmer.loanAmount : 0;
-    console.log("farmerLoan", farmer.loanAmount);
     let loanBalance = farmerLoan - totalLoanRecoveries;
-    console.log("loan balance", farmerLoan)
     
    const commodityValues = [];
    

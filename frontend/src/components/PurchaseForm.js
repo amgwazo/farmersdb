@@ -3,20 +3,21 @@ import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
 import { handleSuccessAlert } from "./SweetAlerts";
 import { useNavigate } from "react-router-dom";
-import { Form } from "react-bootstrap";
 
 const PurchaseForm = () => {
   const { auth } = useAuth();
   const { token } = auth;
   const navigate = useNavigate();
 
-  //const { token, userCompany } = auth;
   const [farmers, setFarmers] = useState([]);
   const [selectedFarmer, setSelectedFarmer] = useState(null);
   const [commodities, setCommodities] = useState([
-    { commodity: "", quantity: "", price: "" },
+    { commodityId: "", quantity: "", price: "" },
   ]);
   const [commodityList, setCommodityList] = useState([]);
+  const [grossAmount, setGrossAmount] = useState(0);
+  const [loanRecovery, setLoanRecovery] = useState(0);
+  const [netAmount, setNetAmount] = useState(0);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -29,7 +30,6 @@ const PurchaseForm = () => {
             Authorization: `${token}`,
           },
         });
-
         setFarmers(response.data);
       } catch (err) {
         console.error("Error fetching farmers:", err);
@@ -47,7 +47,7 @@ const PurchaseForm = () => {
             },
           }
         );
-        console.log(response.data.allowedCommodities)
+
         setCommodityList(response.data.allowedCommodities);
       } catch (err) {
         console.error("Error fetching commodities:", err);
@@ -58,39 +58,52 @@ const PurchaseForm = () => {
     fetchCommodityList();
   }, [token, auth]);
 
+  useEffect(() => {
+    // Calculate Gross Amount
+    const total = commodities.reduce((acc, curr) => {
+      return acc + parseFloat(curr.quantity) * parseFloat(curr.price);
+    }, 0);
+    setGrossAmount(total);
+
+    // Calculate Loan Recovery
+    const loanBalance = selectedFarmer ? selectedFarmer.loanBalance : 0;
+    const recovery = Math.min(total, loanBalance);
+    setLoanRecovery(recovery);
+
+    // Calculate Net Amount
+    setNetAmount(total - recovery);
+  }, [commodities, selectedFarmer]);
+
   const handleSelectFarmer = (e) => {
     const selectedId = e.target.value;
     const farmer = farmers.find((farmer) => farmer._id === selectedId);
     setSelectedFarmer(farmer);
   };
 
-//   const handleInputChange = (e, index) => {
-//     const { name, value } = e.target;
-//     const list = [...commodities];
-//     list[index][name] = value;
-//     setCommodities(list);
-//   };
+  const handleInputChange = (e, index) => {
+    const { name, value } = e.target;
+    const list = [...commodities];
+    list[index][name] = value;
 
-const handleInputChange = (e, index) => {
-  const { name, value } = e.target;
+    // If changing commodity, update the price
+    if (name === "commodityId") {
+      const selectedCommodity = commodityList.find(
+        (commodity) => commodity._id === value
+      );
+      
+      list[index].commodityId = value;
+      list[index].price = selectedCommodity ? selectedCommodity.price : "";
+      list[index].commodity = selectedCommodity ? selectedCommodity.name : "";
+       
+    }
 
-  console.log("input change: ", name, " ", value)
-  const list = [...commodities];
-  const selectedCommodity = commodityList.find(
-    (commodity) => commodity._id === value
-  );
-  list[index][name] = value; //commodity _id
-  list[index].commodityId = value;
-  list[index].price = selectedCommodity ? selectedCommodity.price : ""; 
-  list[index].commodity = selectedCommodity ? selectedCommodity.name : ""; 
-  setCommodities(list);
-};
-
+    setCommodities(list);
+  };
 
   const handleAddCommodity = () => {
     setCommodities([
       ...commodities,
-      { commodity: "", quantity: "", price: "" },
+      { commodityId: "", quantity: "", price: "" },
     ]);
   };
 
@@ -103,6 +116,9 @@ const handleInputChange = (e, index) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+
+        console.log("test comm...", commodities)
+        
       const response = await axios.post(
         "/farmer/purchase/create",
         {
@@ -118,28 +134,22 @@ const handleInputChange = (e, index) => {
       setMessage(response.data.message);
       setError("");
 
-      
-    handleSuccessAlert(
-      `Commodity Purchase saved Successfully.`
-    );
-    // Redirect to the Users component after registration/update
-    navigate("/farmers");
-
+      handleSuccessAlert(`Commodity Purchase saved Successfully.`);
+      // Redirect to the Users component after registration/update
+      navigate("/farmers");
     } catch (err) {
       setError(err.response.data.error);
       setMessage("");
     }
-
   };
-  
 
   return (
-    <div className="container  w-75 bg-light p-3 bg-dark text-success rounded my-1 ps-md-4 pe-md-4">
-      <h5 className="mb-4  text-warning ">Create New Purchase</h5>
-      <Form onSubmit={handleSubmit}>
-        <div className="row mb-3 ">
+    <div className="container w-75 bg-light p-3 bg-dark text-success rounded my-1 ps-md-4 pe-md-4">
+      <h5 className="mb-4 text-warning">Create New Purchase</h5>
+      <form onSubmit={handleSubmit}>
+        <div className="row mb-3">
           <div className="col-md-4">
-            <h5 >Farmer Details</h5>
+            <label>Select Farmer:</label>
             <select className="form-select" onChange={handleSelectFarmer}>
               <option value="">-- Select Farmer --</option>
               {farmers.map((farmer) => (
@@ -150,6 +160,7 @@ const handleInputChange = (e, index) => {
             </select>
           </div>
         </div>
+
         {selectedFarmer && (
           <div className="row mb-3">
             <div className="col-md-6">
@@ -166,78 +177,93 @@ const handleInputChange = (e, index) => {
             </div>
             <div className="col-md-6">
               <label>Loan Amount:</label>
-              <span>{selectedFarmer.loanAmount}</span>
+              <span>{selectedFarmer.loanAmount || 0}</span>
             </div>
             <div className="col-md-6">
               <label>Loan Balance:</label>
-              <span>{selectedFarmer.loanBalance}</span>
+              <span>{selectedFarmer.loanBalance || 0}</span>
+            </div>
+            <div className="col-md-6">
+              <label>Gross Amount:</label>
+              <span>{grossAmount || 0}</span>
+            </div>
+            <div className="col-md-6">
+              <label>Loan Recovery:</label>
+              <span>{loanRecovery || 0}</span>
+            </div>
+            <div className="col-md-6">
+              <label>Net Amount:</label>
+              <span>{netAmount || 0}</span>
             </div>
           </div>
         )}
-        <div className="row mb-3">
-          <div className="col-md-12">
-            <h5 >Commodities</h5>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Commodity</th>
-                  <th>Quantity</th>
-                  <th>Price</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {commodities.map((commodity, index) => (
-                  <tr key={index}>
-                    <td>
-                      <select
-                        className="form-select"
-                        name="commodity"
-                        value={commodity._id}
-                        onChange={(e) => handleInputChange(e, index)}
-                      >
-                        <option value="">-- Select Commodity --</option>
-                        {commodityList.map((c) => (
-                          <option key={c._id} value={c._id}>
-                            {c.name}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        className="form-control"
-                        name="quantity"
-                        value={commodity.quantity}
-                        onChange={(e) => handleInputChange(e, index)}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        className="form-control"
-                        name="price"
-                        value={commodity.price}
-                        onChange={(e) => handleInputChange(e, index)}
-                      />
-                    </td>
-                    <td>
-                      <button
-                        type="button"
-                        className="btn btn-danger"
-                        onClick={() => handleRemoveCommodity(index)}
-                      >
-                        Remove
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className="row mb-3">
+
+        <h3 className="mt-4 mb-3">Commodities</h3>
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th>Commodity</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Line Total</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {commodities.map((commodity, index) => (
+              <tr key={index}>
+                <td>
+                  <select
+                    className="form-select"
+                    name="commodityId"
+                    value={commodity.commodityId}
+                    onChange={(e) => handleInputChange(e, index)}
+                  >
+                    <option value="">-- Select Commodity --</option>
+                    {commodityList.map((commodity) => (
+                      <option key={commodity._id} value={commodity._id}>
+                        {commodity.name}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    className="form-control"
+                    name="quantity"
+                    value={commodity.quantity}
+                    onChange={(e) => handleInputChange(e, index)}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    className="form-control"
+                    name="price"
+                    value={commodity.price || 0}
+                    readOnly
+                  />
+                </td>
+                <td>
+                  {parseFloat(commodity.quantity) * parseFloat(commodity.price) || 0}
+                </td>
+                <td>
+                  {index !== 0 && (
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={() => handleRemoveCommodity(index)}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="row">
           <div className="col-md-12">
             <button
               type="button"
@@ -248,12 +274,16 @@ const handleInputChange = (e, index) => {
             </button>
           </div>
         </div>
-        <button type="submit" className="btn btn-success">
-          Submit
-        </button>
-      </Form>
-      {message && <p className="text-success mt-3">{message}</p>}
-      {error && <p className="text-danger mt-3">{error}</p>}
+        <div className="row mt-3">
+          <div className="col-md-12">
+            <button type="submit" className="btn btn-success">
+              Submit
+            </button>
+          </div>
+        </div>
+      </form>
+      {message && <div className="alert alert-success mt-3">{message}</div>}
+      {error && <div className="alert alert-danger mt-3">{error}</div>}
     </div>
   );
 };
