@@ -7,7 +7,6 @@ const createPurchase = async (req, res) => {
   const { farmerId, commodities } = req.body;
 
   commodities.forEach((commodity) => {
-    console.log(commodity);
   });
 
   
@@ -125,6 +124,34 @@ const createPurchase = async (req, res) => {
 };
 
 
+
+const searchPurchases = async (req, res) => {
+  try {
+    const searchQuery = req.query.q;
+    const purchases = await CommodityPurchases.find({
+      $or: [
+        // { _id: searchQuery },
+        // { farmerId: searchQuery },
+        // { companyId: searchQuery },
+        { "commodities.commodity": searchQuery },
+        { "company.name": searchQuery },
+      ],
+    }).populate("farmerId companyId commodities.commodityId");
+
+    if (!purchases) {
+      return res.status(404).json({ message: "No purchases found" });
+    }
+
+    res.status(200).json({ purchases });
+  } catch (error) {
+    console.error("Error searching purchases:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+
 module.exports = {
-    createPurchase,
-}
+  createPurchase,
+  searchPurchases,
+};

@@ -12,6 +12,8 @@ const createFarmer = async (req, res) => {
 
       const company = req.user.company;
       const capturedBy = req.user.username;
+      const companyId = req.user.companyId 
+
       
   const currentDate = new Date();
   currentDate.setUTCHours(currentDate.getUTCHours() + 2);
@@ -35,6 +37,7 @@ const createFarmer = async (req, res) => {
       gender,
       year,
       loanAmount: unFormattedLoanAmount,
+      loanBalance: unFormattedLoanAmount,
       companyId,
       capturedBy,
       lastModifiedBy: capturedBy,
@@ -270,25 +273,50 @@ const getFarmerByNationalId = async (req, res) => {
 
 const getFilteredFarmer = async (req, res) => {
   const { searchTerm } = req.query;
-  console.log(`inside filtered farmer: ${searchTerm}`)
+  const companyId = req.user.companyId;
 
   try {
     let farmer;
 
-    //Get all farmers
+    // Get all farmers
     if (!searchTerm) {
-      farmer = await Farmer.find();
+      // Check if the user is allowed to view transactions for other companies
+      if (companyId === "65d8856b66e46951155bf6b4") {
+        farmer = await Farmer.find();
+      } else {
+        farmer = await Farmer.find({ companyId: companyId });
+      }
     }
 
     // Check if the searchTerm is a valid ObjectId
     else if (Types.ObjectId.isValid(searchTerm)) {
       // If valid, search by _id directly
-      farmer = await Farmer.findOne({ _id: searchTerm });
+      farmer = await Farmer.findOne({ _id: searchTerm, companyId: companyId });
     } else {
       // Otherwise, search by first name or last name or national id
-      farmer = await Farmer.find({
-        $or: [{ firstName: searchTerm }, { lastName: searchTerm }, { nationalId: searchTerm }],
-      });
+      // and filter by companyId if user is not allowed to view transactions for other companies
+      if (companyId === "65d8856b66e46951155bf6b4") {
+        farmer = await Farmer.find({
+          $or: [
+            { firstName: searchTerm },
+            { lastName: searchTerm },
+            { nationalId: searchTerm },
+          ],
+        });
+      } else {
+        farmer = await Farmer.find({
+          $and: [
+            {
+              $or: [
+                { firstName: searchTerm },
+                { lastName: searchTerm },
+                { nationalId: searchTerm },
+              ],
+            },
+            { companyId: companyId },
+          ],
+        });
+      }
     }
 
     if (!farmer) {
@@ -301,6 +329,8 @@ const getFilteredFarmer = async (req, res) => {
     res.status(500).json({ message: "Internal server errors" });
   }
 };
+
+
 
 
 const updateFarmer = async (req, res) => {
@@ -365,7 +395,7 @@ const updateFarmer = async (req, res) => {
         gender,
         year,
         loanAmount: unFormattedLoanAmount,
-        companyId,
+        companyId: req.user.companyId,
         capturedBy,
         lastModifiedBy,
         updatedDate,

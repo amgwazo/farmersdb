@@ -11,11 +11,12 @@ router.use(verifyToken);
 // Both users and admins can create a new farmer and read the list of farmers
 router.post("/", farmerController.createFarmer);
 router.post("/purchase/create", purchaseController.createPurchase);
+router.get("/purchases", purchaseController.searchPurchases)
 
 // Route for bulk insert of farmers
 router.post('/farmers', farmerController.bulkInsertFarmers);
 
-router.get("/", farmerController.getFarmers);
+router.get("/", farmerController.getFilteredFarmer);
 router.get("/:nationalId", farmerController.getFarmerByNationalId);
 router.get("/filtered/farmer", farmerController.getFilteredFarmer);
 

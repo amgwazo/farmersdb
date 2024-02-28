@@ -103,7 +103,7 @@ const PurchaseForm = () => {
   const handleAddCommodity = () => {
     setCommodities([
       ...commodities,
-      { commodityId: "", quantity: "", price: "" },
+      { commodityId: "", quantity: 0, price: 0 },
     ]);
   };
 
@@ -146,7 +146,7 @@ const PurchaseForm = () => {
   return (
     <div className="container w-75 bg-light p-3 bg-dark text-success rounded my-1 ps-md-4 pe-md-4">
       <h5 className="mb-4 text-warning">Create New Purchase</h5>
-      <form onSubmit={handleSubmit}>
+      <form autocomplete="off" onSubmit={handleSubmit}>
         <div className="row mb-3">
           <div className="col-md-4">
             <label>Select Farmer:</label>
@@ -246,7 +246,8 @@ const PurchaseForm = () => {
                   />
                 </td>
                 <td>
-                  {parseFloat(commodity.quantity) * parseFloat(commodity.price) || 0}
+                  {parseFloat(commodity.quantity) *
+                    parseFloat(commodity.price) || 0}
                 </td>
                 <td>
                   {index !== 0 && (

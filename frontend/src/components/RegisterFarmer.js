@@ -79,6 +79,7 @@ function RegisterFarmer() {
             gender: farmer.gender,
             year: farmer.year,
             loanAmount: farmer.loanAmount,
+            loanBalance: farmer.loanBalance,
             companyId: farmer.companyId,
             creationDate: format(farmer.creationDate, "MMMM d yyyy, h:mm a"),
             updatedDate: format(farmer.updatedDate, "MMMM d yyyy, h:mm a"),
@@ -121,7 +122,7 @@ function RegisterFarmer() {
         .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
       // Update the state with the formatted value and clear validation errors
-      setFarmerData({ ...farmerData, [name]: formattedValue });
+      setFarmerData({ ...farmerData, [name]: formattedValue , loanBalance: formattedValue});
     } else {
       // For other fields, update the state with the unformatted value and clear validation errors
       setFarmerData({ ...farmerData, [name]: value });
@@ -220,6 +221,7 @@ function RegisterFarmer() {
         {farmerId ? "Update Farmer" : "Register Farmer"}
       </h6>
       <Form
+        autocomplete="off"
         onSubmit={handleSubmit}
         className="row text-success pt-0 ps-md-5 pe-md-5"
       >
@@ -266,8 +268,6 @@ function RegisterFarmer() {
 
         <div className="col-xs-0 col-md-6"></div>
 
-        <div className="col-xs-0 col-md-3"></div>
-
         <Form.Group controlId="formLoanAmount" className="col-md-3">
           <Form.Label>Loan Amount</Form.Label>
           <InputMask
@@ -285,10 +285,16 @@ function RegisterFarmer() {
             isInvalid={!!validationErrors.loanAmount}
             required
             className="ps-1 py-0"
+            disabled={farmerData.loanAmount !== farmerData.loanBalance ? true : false}
           />
           <Form.Control.Feedback type="invalid">
             {validationErrors.loanAmount}
           </Form.Control.Feedback>
+        </Form.Group>
+
+        <Form.Group controlId="formLoanBalance" className="col-md-3">
+          <Form.Label>Loan Balance</Form.Label>
+          <div className="ps-1 py-0">{farmerData.loanBalance}</div>
         </Form.Group>
 
         <Form.Group controlId="formFirstName" className="col-md-6">
